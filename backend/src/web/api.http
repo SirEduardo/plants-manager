@@ -1,0 +1,27 @@
+### recuperar todos los usuarios
+GET https://localhost:3000/users
+### crear un usuario
+POST http://localhost:3000/users
+Content-type: application/json
+
+{
+    "username": "Edu",
+    "password": "12345",
+    "email": "edu@gmail.com"
+}
+
+
+### recuperar las plantas
+GET https://localhost:3000/plants
+
+### crear plantas
+POST http://localhost:3000/plants
+Content-Type: application/json
+
+{
+    "name": "alo vera",
+    "image": "jasbdfkjbasdfkbsadf",
+    "last_watering_date": "20/02/2025",
+    "watering_frequency": 10,
+
+}
