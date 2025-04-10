@@ -3,7 +3,7 @@ import './index.css'
 import App from './App.tsx'
 import { BrowserRouter, Routes, Route } from 'react-router'
 import { PlantId } from './components/plantId.tsx'
-import AddPlants from './components/AddPlants.tsx'
+import AddPlants from './components/addPlants.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
