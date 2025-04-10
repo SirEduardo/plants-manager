@@ -1,5 +1,5 @@
 ### recuperar todos los usuarios
-GET https://localhost:3000/users
+GET http://localhost:3000/users
 ### crear un usuario
 POST http://localhost:3000/users
 Content-type: application/json
@@ -12,16 +12,43 @@ Content-type: application/json
 
 
 ### recuperar las plantas
-GET https://localhost:3000/plants
+GET http://localhost:3000/plants/2558e324-160a-11f0-b089-244bfe799113
 
 ### crear plantas
 POST http://localhost:3000/plants
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=FormBoundary12345
 
-{
-    "name": "alo vera",
-    "image": "jasbdfkjbasdfkbsadf",
-    "last_watering_date": "20/02/2025",
-    "watering_frequency": 10,
+--FormBoundary12345
+Content-Disposition: form-data; name="name"
 
-}
+Cactus de Navidad
+--FormBoundary12345
+Content-Disposition: form-data; name="image"; filename="aloe-vera.jpg"
+Content-Type: image/jpeg
+
+< ../public/cactus-de-navidad.jpg
+--FormBoundary12345
+Content-Disposition: form-data; name="last_watering_date"
+
+2025-04-10
+--FormBoundary12345
+Content-Disposition: form-data; name="watering_frequency"
+
+14
+--FormBoundary12345
+Content-Disposition: form-data; name="last_fertilize_date"
+
+2025-03-01
+--FormBoundary12345
+Content-Disposition: form-data; name="fertilize_frequency"
+
+32
+--FormBoundary12345
+Content-Disposition: form-data; name="min_temperature"
+
+15
+--FormBoundary12345
+Content-Disposition: form-data; name="max_temperature"
+
+30
+--FormBoundary12345--

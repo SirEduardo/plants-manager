@@ -1,0 +1,65 @@
+{
+    "plants": [
+      {
+        "id": "1",
+        "name": "Lengua de suegra",
+        "species": "Sansevieria trifasciata",
+        "image": "./public/lengua-de-serpiente.webp",
+        "last_watering_date": "2025-04-05",
+        "watering_frequency": "Cada 15 días",
+        "min_temperature": 10,
+        "max_temperature": 30
+      },
+      {
+        "id": "2",
+        "name": "Poto",
+        "species": "Epipremnum aureum",
+        "image": "./public/poto.webp",
+        "last_watering_date": "2025-04-07",
+        "watering_frequency": "Cada 7 días",
+        "min_temperature": 15,
+        "max_temperature": 30
+      },
+      {
+        "id": "3",
+        "name": "Cactus de Navidad",
+        "species": "Schlumbergera truncata",
+        "image": "./public/cactus-de-navidad.jpg",
+        "last_watering_date": "2025-04-03",
+        "watering_frequency": "Cada 10 días",
+        "min_temperature": 10,
+        "max_temperature": 25
+      },
+      {
+        "id": "4",
+        "name": "Palmera Areca",
+        "species": "Dypsis lutescens",
+        "image": "./public/palmera areca.jpg",
+        "last_watering_date": "2025-04-06",
+        "watering_frequency": "Cada 5 días",
+        "min_temperature": 18,
+        "max_temperature": 30
+      },
+      {
+        "id": "5",
+        "name": "Aloe Vera",
+        "species": "Aloe barbadensis",
+        "image": "./public/aloe-vera.jpg",
+        "last_watering_date": "2025-04-04",
+        "watering_frequency": "Cada 20 días",
+        "min_temperature": 5,
+        "max_temperature": 35
+      },
+      {
+        "id": "6",
+        "name": "Helecho de Boston",
+        "species": "Nephrolepis exaltata",
+        "image": "./public/helecho-de-boston.jpg",
+        "last_watering_date": "2025-04-08",
+        "watering_frequency": "Cada 3 días",
+        "min_temperature": 15,
+        "max_temperature": 27
+      }
+    ]
+  }
+  

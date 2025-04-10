@@ -8,10 +8,10 @@ const usersSchema = z.object({
     plants: z.array(plantSchema).optional(),
 })
 
-export function validateUser(user) {
+export function validateUser(user: unknown) {
     return usersSchema.safeParse(user)
 }
 
-export function validatePartialUser(user) {
+export function validatePartialUser(user: unknown) {
     return usersSchema.partial().safeParse(user)
 }
