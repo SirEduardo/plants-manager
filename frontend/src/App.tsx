@@ -1,5 +1,5 @@
 import { Header } from './components/Header'
-import { PlantsList } from './components/PlantsList'
+import { PlantsList } from './components/plantsList'
 
 function App() {
   return (

@@ -3,6 +3,7 @@ import { Plants } from '../types'
 import { useEffect, useState } from 'react'
 
 //import plantsData from '../plants.json'
+const apiUrl = import.meta.env.VITE_API_URL
 
 export function PlantId() {
   const { id } = useParams<{ id: string }>()
@@ -12,7 +13,7 @@ export function PlantId() {
 
   useEffect(() => {
     const fetchPlantById = async () => {
-      const response = await fetch(`http://localhost:3000/plants/${id}`)
+      const response = await fetch(`${apiUrl}/plants/${id}`)
       const res = await response.json()
       setPlant(res)
     }

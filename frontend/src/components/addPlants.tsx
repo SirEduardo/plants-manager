@@ -6,6 +6,8 @@ import { Header } from './Header'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 export default function AddPlants() {
   const [formData, setFormData] = useState({
     name: '',
@@ -55,7 +57,7 @@ export default function AddPlants() {
       form.append('image', formData.image)
     }
     try {
-      const response = await axios.post('http://localhost:3000/plants', form, {
+      const response = await axios.post(`${apiUrl}/plants`, form, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

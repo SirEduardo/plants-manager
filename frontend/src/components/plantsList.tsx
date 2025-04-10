@@ -1,12 +1,13 @@
 import { Link } from 'react-router'
 import { Plants } from '../types'
 import { useEffect, useState } from 'react'
+const apiUrl = import.meta.env.VITE_API_URL
 
 export const PlantsList = () => {
   const [plants, setPlants] = useState([])
   useEffect(() => {
     const fetchPlants = async () => {
-      const response = await fetch('http://localhost:3000/plants')
+      const response = await fetch(`${apiUrl}/plants`)
       const res = await response.json()
       setPlants(res)
     }
