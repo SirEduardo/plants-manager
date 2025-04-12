@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 
 //import plantsData from '../plants.json'
-const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+//const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
 export function PlantId() {
   const { id } = useParams<{ id: string }>()
@@ -73,9 +73,17 @@ export function PlantId() {
                   </div>
                 </div>
 
-                <div className="bg-gray-700/50 p-3 rounded-lg">
-                  <p className="text-xs text-gray-400">Luz solar</p>
-                  <p className="font-medium">{plantDetail.sunlight}</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-gray-700/50 p-3 rounded-lg">
+                    <p className="text-xs text-gray-400">Luz solar</p>
+                    <p className="font-medium">{plantDetail.sunlight}</p>
+                  </div>
+                  <div className="bg-gray-700/50 p-3 rounded-lg">
+                    <p className="text-xs text-gray-400">Localización</p>
+                    <p className="font-medium">
+                      {plantDetail.location === true ? 'Interior' : 'Exterior'}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">

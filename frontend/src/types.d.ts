@@ -13,4 +13,5 @@ export interface Plants {
     descritpion: string
     sunlight: string
     toxicity: string
+    location: boolean
 }

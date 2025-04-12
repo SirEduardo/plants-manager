@@ -5,10 +5,14 @@ import { Calendar, Droplets, Leaf, Thermometer } from 'lucide-react'
 import { Header } from './Header'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
+import {
+  fetchExternalDataId,
+  fetchExternalDetails
+} from './fetch/getExternalData'
+import { Form } from './form'
+import { translateToEnglish } from './fetch/translateToEnglish'
 
-const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
-const Key = import.meta.env.VITE_PLANT_API_KEY
-const plantApiUrl = 'https://perenual.com/api/v2'
+//const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
 export default function AddPlants() {
   const [formData, setFormData] = useState({
@@ -18,12 +22,16 @@ export default function AddPlants() {
     last_watering_date: '',
     watering_frequency: '',
     last_fertilize_date: '',
-    fertilize_frequency: '',
-    min_temperature: '',
-    max_temperature: ''
+    fertilize_frequency: ''
   })
 
   const navigate = useNavigate()
+
+  const isSpanish = (text: string): boolean => {
+    // Chequeamos si el texto contiene letras típicas del español, como 'á', 'é', 'í', 'ó', 'ú'
+    const spanishCharacters = /[áéíóúñ]/i
+    return spanishCharacters.test(text)
+  }
 
   // Función para manejar cambios en los inputs
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,93 +46,55 @@ export default function AddPlants() {
     }
   }
 
-  const fetchExternalDataId = async (commonName: string) => {
-    try {
-      const response = await axios.get(
-        `${plantApiUrl}/species-list?key=${Key}&q=${commonName}`
-      )
-
-      if (
-        response.data &&
-        response.data.data &&
-        response.data.data.length > 0
-      ) {
-        const plantId = response.data.data[0].id
-        return plantId
-      } else {
-        throw new Error('No se encontraron resultados para la planta.')
-      }
-    } catch (error) {
-      console.error('Error al obtener datos de la API externa', error)
-      throw new Error('No se pudieron obtener los datos de la API externa.')
-    }
-  }
-  const fetchExternalDetails = async (plantId: string) => {
-    try {
-      const response = await axios.get(
-        `${plantApiUrl}/species/details/${plantId}?key=${Key}`
-      )
-      if (response.data) {
-        return response.data
-      } else {
-        throw new Error('No se encontraron detalles para esta planta.')
-      }
-    } catch (error) {
-      console.error('Error al obtener detalles de la planta', error)
-      throw new Error('No se pudieron obtener los detalles de la planta.')
-    }
-  }
-
   // Manejador del formulario
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      const localResponse = await axios.get(
-        `http://localhost:3000/plants/external?commonName=${formData.commonName}`
-      )
+      let plantDetails = {
+        watering: 'unknown',
+        sunlight: ['unknown'],
+        cycle: 'unknown',
+        edible_fruit: false,
+        poisonous_to_humans: 'unknown',
+        description: 'No description available.',
+        location: 'unknown'
+      }
 
-      let plantDetails
-      if (localResponse.data && localResponse.data.exists === true) {
-        plantDetails = localResponse.data.data
-      } else {
-        const plantId = await fetchExternalDataId(formData.commonName)
-        plantDetails = await fetchExternalDetails(plantId)
+      try {
+        let plantNameInEnglish = formData.commonName
+
+        // Si el nombre se introdujo en español, lo traducimos a inglés
+        if (isSpanish(formData.commonName)) {
+          plantNameInEnglish = await translateToEnglish(formData.commonName)
+          console.log(`Nombre traducido a inglés: ${plantNameInEnglish}`)
+        }
+
+        // Intentamos obtener el ID de la planta con el nombre traducido
+        const plantId = await fetchExternalDataId(plantNameInEnglish)
+
+        const externalDetails = await fetchExternalDetails(plantId)
+        if (externalDetails) {
+          plantDetails = {
+            watering: externalDetails.watering ?? 'unknown',
+            sunlight: externalDetails.sunlight ?? ['unknown'],
+            cycle: externalDetails.cycle ?? 'unknown',
+            edible_fruit: externalDetails.edible_fruit ?? false,
+            location: externalDetails.indoor ?? false,
+            poisonous_to_humans:
+              externalDetails.poisonous_to_humans ?? 'unknown',
+            description:
+              externalDetails.description ?? 'No description available.'
+          }
+        }
+      } catch (error) {
+        console.warn(
+          'No se pudieron obtener detalles externos, se usan valores por defecto.'
+        )
       }
       setFormData((prev) => ({ ...prev, plantDetails }))
 
-      const form = new FormData()
-      form.append('commonName', formData.commonName)
-
-      if (formData.image) {
-        form.append('image', formData.image)
-      }
-      console.log('DETALLES COMPLETOS DE LA PLANTA', plantDetails)
-
-      if (plantDetails) {
-        form.append('watering', plantDetails.watering || 'unknown')
-        form.append('sunlight', plantDetails.sunlight[0] || 'unknown')
-        form.append('cycle', plantDetails.cycle || 'unknown')
-        form.append('edible', plantDetails.edible_fruit || false)
-        form.append('toxicity', plantDetails.poisonous_to_humans || 'unknown')
-        form.append(
-          'description',
-          plantDetails.description || 'No description available.'
-        )
-        form.append(
-          'last_watering_date',
-          formData.last_watering_date || new Date().toISOString()
-        )
-        form.append('watering_frequency', formData.watering_frequency)
-        form.append(
-          'last_fertilize_date',
-          formData.last_fertilize_date || new Date().toISOString()
-        )
-        form.append('fertilize_frequency', formData.fertilize_frequency)
-        form.append('min_temperature', formData.min_temperature)
-        form.append('max_temperature', formData.max_temperature)
-      }
-
+      const form = Form(formData, plantDetails)
       const response = await axios.post(`http://localhost:3000/plants`, form, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -257,43 +227,6 @@ export default function AddPlants() {
                     type="number"
                     placeholder="7"
                     value={formData.fertilize_frequency}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-green-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label
-                    htmlFor="min_temperature"
-                    className="text-green-700 flex items-center gap-1 text-sm font-medium"
-                  >
-                    <Thermometer className="h-4 w-4" />
-                    Temperatura Mínima (°C)
-                  </label>
-                  <input
-                    id="min_temperature"
-                    type="number"
-                    placeholder="15"
-                    value={formData.min_temperature}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-green-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label
-                    htmlFor="max_temperature"
-                    className="text-green-700 flex items-center gap-1 text-sm font-medium"
-                  >
-                    <Thermometer className="h-4 w-4" />
-                    Temperatura Máxima (°C)
-                  </label>
-                  <input
-                    id="max_temperature"
-                    type="number"
-                    placeholder="25"
-                    value={formData.max_temperature}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-green-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
