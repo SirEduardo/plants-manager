@@ -1,14 +1,14 @@
 import z from 'zod'
 
 export const plantSchema = z.object({
-  name: z.string(),
+  commonName: z.string(),
   image: z.string().optional(),
-  last_watering_date: z.string(),
-  watering_frequency: z.preprocess((val) => Number(val), z.number()),
-  last_fertilize_date: z.string(),
-  fertilize_frequency: z.preprocess((val) => Number(val), z.number()),
-  min_temperature: z.preprocess((val) => Number(val), z.number()),
-  max_temperature: z.preprocess((val) => Number(val), z.number())
+  watering: z.string().optional().default('unknown'),
+  sunlight: z.string().optional().default('unknown'),
+  cycle: z.string().optional().default('unknown'),
+  edible: z.string().optional().default('unknown'),
+  toxicity: z.string().optional().default('unknown'),
+  description: z.string().optional().default('No description available')
 })
 
 export function validatePlant(plant) {

@@ -12,43 +12,22 @@ Content-type: application/json
 
 
 ### recuperar las plantas
-GET http://localhost:3000/plants/2558e324-160a-11f0-b089-244bfe799113
+GET http://localhost:3000/plants/
 
 ### crear plantas
 POST http://localhost:3000/plants
 Content-Type: multipart/form-data; boundary=FormBoundary12345
 
 --FormBoundary12345
-Content-Disposition: form-data; name="name"
+Content-Disposition: form-data; name="commonName"
 
 Cactus de Navidad
 --FormBoundary12345
 Content-Disposition: form-data; name="image"; filename="aloe-vera.jpg"
 Content-Type: image/jpeg
 
-< ../public/cactus-de-navidad.jpg
---FormBoundary12345
-Content-Disposition: form-data; name="last_watering_date"
-
-2025-04-10
---FormBoundary12345
-Content-Disposition: form-data; name="watering_frequency"
-
-14
---FormBoundary12345
-Content-Disposition: form-data; name="last_fertilize_date"
-
-2025-03-01
---FormBoundary12345
-Content-Disposition: form-data; name="fertilize_frequency"
-
-32
---FormBoundary12345
-Content-Disposition: form-data; name="min_temperature"
-
-15
---FormBoundary12345
-Content-Disposition: form-data; name="max_temperature"
-
-30
+< ../public/aloe-vera.jpg
 --FormBoundary12345--
+
+### recuperar las plantas por nombre
+GET http://localhost:3000/plants/external?commonName=Aloe%20Vera
