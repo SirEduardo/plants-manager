@@ -3,7 +3,7 @@ import { PlantsList } from './components/plantsList'
 
 function App() {
   return (
-    <body className="bg-gray-700 text-white">
+    <body className="min-h-svh bg-gradient-to-b from-gray-800 to-gray-900 text-white p-6">
       <Header />
       <header>
         <h1 className="flex justify-center items-center text-5xl pt-20">

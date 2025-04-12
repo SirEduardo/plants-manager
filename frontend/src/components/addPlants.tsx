@@ -1,17 +1,20 @@
 'use client'
 
 import { useState } from 'react'
-import { Leaf, Thermometer, Droplets, Calendar } from 'lucide-react'
+import { Calendar, Droplets, Leaf, Thermometer } from 'lucide-react'
 import { Header } from './Header'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
 
-const apiUrl = import.meta.env.VITE_API_URL
+const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+const Key = import.meta.env.VITE_PLANT_API_KEY
+const plantApiUrl = 'https://perenual.com/api/v2'
 
 export default function AddPlants() {
   const [formData, setFormData] = useState({
-    name: '',
+    commonName: '',
     image: null as File | null,
+    externalData: null as any,
     last_watering_date: '',
     watering_frequency: '',
     last_fertilize_date: '',
@@ -34,30 +37,95 @@ export default function AddPlants() {
       setFormData((prev) => ({ ...prev, image: files[0] }))
     }
   }
+
+  const fetchExternalDataId = async (commonName: string) => {
+    try {
+      const response = await axios.get(
+        `${plantApiUrl}/species-list?key=${Key}&q=${commonName}`
+      )
+
+      if (
+        response.data &&
+        response.data.data &&
+        response.data.data.length > 0
+      ) {
+        const plantId = response.data.data[0].id
+        return plantId
+      } else {
+        throw new Error('No se encontraron resultados para la planta.')
+      }
+    } catch (error) {
+      console.error('Error al obtener datos de la API externa', error)
+      throw new Error('No se pudieron obtener los datos de la API externa.')
+    }
+  }
+  const fetchExternalDetails = async (plantId: string) => {
+    try {
+      const response = await axios.get(
+        `${plantApiUrl}/species/details/${plantId}?key=${Key}`
+      )
+      if (response.data) {
+        return response.data
+      } else {
+        throw new Error('No se encontraron detalles para esta planta.')
+      }
+    } catch (error) {
+      console.error('Error al obtener detalles de la planta', error)
+      throw new Error('No se pudieron obtener los detalles de la planta.')
+    }
+  }
+
   // Manejador del formulario
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const form = new FormData()
-    form.append('name', formData.name)
-    form.append(
-      'last_watering_date',
-      formData.last_watering_date || new Date().toISOString()
-    ) // Añade fecha actual si no está disponible
-    form.append('watering_frequency', formData.watering_frequency)
-    form.append(
-      'last_fertilize_date',
-      formData.last_fertilize_date || new Date().toISOString()
-    ) // Añade fecha actual si no está disponible
-    form.append('fertilize_frequency', formData.fertilize_frequency)
-    form.append('min_temperature', formData.min_temperature)
-    form.append('max_temperature', formData.max_temperature)
-
-    if (formData.image) {
-      form.append('image', formData.image)
-    }
     try {
-      const response = await axios.post(`${apiUrl}/plants`, form, {
+      const localResponse = await axios.get(
+        `http://localhost:3000/plants/external?commonName=${formData.commonName}`
+      )
+
+      let plantDetails
+      if (localResponse.data && localResponse.data.exists === true) {
+        plantDetails = localResponse.data.data
+      } else {
+        const plantId = await fetchExternalDataId(formData.commonName)
+        plantDetails = await fetchExternalDetails(plantId)
+      }
+      setFormData((prev) => ({ ...prev, plantDetails }))
+
+      const form = new FormData()
+      form.append('commonName', formData.commonName)
+
+      if (formData.image) {
+        form.append('image', formData.image)
+      }
+      console.log('DETALLES COMPLETOS DE LA PLANTA', plantDetails)
+
+      if (plantDetails) {
+        form.append('watering', plantDetails.watering || 'unknown')
+        form.append('sunlight', plantDetails.sunlight[0] || 'unknown')
+        form.append('cycle', plantDetails.cycle || 'unknown')
+        form.append('edible', plantDetails.edible_fruit || false)
+        form.append('toxicity', plantDetails.poisonous_to_humans || 'unknown')
+        form.append(
+          'description',
+          plantDetails.description || 'No description available.'
+        )
+        form.append(
+          'last_watering_date',
+          formData.last_watering_date || new Date().toISOString()
+        )
+        form.append('watering_frequency', formData.watering_frequency)
+        form.append(
+          'last_fertilize_date',
+          formData.last_fertilize_date || new Date().toISOString()
+        )
+        form.append('fertilize_frequency', formData.fertilize_frequency)
+        form.append('min_temperature', formData.min_temperature)
+        form.append('max_temperature', formData.max_temperature)
+      }
+
+      const response = await axios.post(`http://localhost:3000/plants`, form, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -75,9 +143,9 @@ export default function AddPlants() {
   }
 
   return (
-    <main className="h-screen bg-gray-700 text-white">
+    <main className="min-h-svh bg-gradient-to-b from-gray-800 to-gray-900 text-white p-6">
       <Header />
-      <div className="flex flex-col items-center ">
+      <div className="flex flex-col items-center pt-20">
         <section className="w-full max-w-2xl mx-auto shadow-lg border-green-100 rounded-lg  text-black">
           <div className="bg-green-50 rounded-t-lg p-6">
             <div className="text-green-800 flex items-center gap-2 text-2xl font-semibold">
@@ -94,15 +162,15 @@ export default function AddPlants() {
               <div>
                 <div className="space-y-2">
                   <label
-                    htmlFor="name"
+                    htmlFor="commonName"
                     className="text-green-700 text-sm font-medium block"
                   >
                     Nombre
                   </label>
                   <input
-                    id="name"
+                    id="commonName"
                     placeholder="Nombre de tu planta"
-                    value={formData.name}
+                    value={formData.commonName}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-green-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
