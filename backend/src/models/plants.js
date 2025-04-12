@@ -51,8 +51,11 @@ export class PlantsModel {
     const {
       commonName,
       image,
+      last_watering_date,
+      last_fertilize_date,
       watering,
       sunlight,
+      location,
       cycle,
       edible,
       toxicity,
@@ -68,12 +71,13 @@ export class PlantsModel {
 
       let plantId
 
+      // Si no existe, la insertamos
       if (existingPlant.length > 0) {
         plantId = existingPlant[0].id
       } else {
         const [insertResult] = await db.query(
-          'INSERT INTO user_plants (common_name, image) VALUES (?, ?)',
-          [commonName, image]
+          'INSERT INTO user_plants (common_name, image, last_watering_date, last_fertilize_date) VALUES (?, ?, ?, ?)',
+          [commonName, image, last_watering_date, last_fertilize_date]
         )
         plantId = insertResult.insertId
       }
@@ -83,14 +87,15 @@ export class PlantsModel {
         [commonName]
       )
 
-      // Guardamos los datos externos que nos vienen del frontend (que fueron obtenidos de la API externa)
+      // Guardamos los datos externos que nos vienen del frontend (que fueron obtenidos de la API externa) si no existiera
       if (existingExternalData.length === 0) {
         await db.query(
-          'INSERT INTO external_plant_data (common_name, watering, sunlight, cycle, edible, toxicity, description, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          'INSERT INTO external_plant_data (common_name, watering, sunlight, location, cycle, edible, toxicity, description, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
           [
             commonName,
             watering,
             sunlight,
+            location,
             cycle,
             edible,
             toxicity,
@@ -100,14 +105,8 @@ export class PlantsModel {
         )
       }
 
-      // Obtenemos los datos de la planta externa actualizada
-      const [updatedExternalData] = await db.query(
-        'SELECT * FROM external_plant_data WHERE common_name = ?',
-        [commonName]
-      )
-
       const externalData =
-        updatedExternalData.length > 0 ? updatedExternalData[0] : {}
+        existingExternalData.length > 0 ? existingExternalData[0] : {}
 
       return {
         success: true,

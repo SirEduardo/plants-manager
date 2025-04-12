@@ -38,8 +38,8 @@ export class PlantsController {
         return res.status(400).json({ error: 'Datos de planta inválidos' })
       }
 
-      data.edible = data.edible === 'true' // Asegura que 'edible' sea un booleano
-      data.toxicity = data.toxicity === 'true' // Asegura que 'toxicity' sea un booleano
+      data.edible = data.edible === 'true'
+      data.toxicity = data.toxicity === 'true'
       if (req.file) {
         data.image = req.file.path // Aquí se obtiene la URL de Cloudinary
       } else {
@@ -54,35 +54,6 @@ export class PlantsController {
       return res
         .status(500)
         .json({ error: 'Internal Server Error', message: error.message })
-    }
-  }
-
-  static async checkPlantExists(req, res) {
-    if (!req || !res) {
-      console.log('Request o Response no están definidos correctamente')
-      return
-    }
-    const { commonName } = req.query
-    if (!commonName) {
-      return res
-        .status(400)
-        .json({ error: 'Se requiere el nombre de la planta' })
-    }
-
-    try {
-      const [existingPlant] = await db.query(
-        'SELECT * FROM external_plant_data WHERE common_name = ?',
-        [commonName]
-      )
-
-      if (existingPlant.length > 0) {
-        return res.json({ exists: true, data: existingPlant[0] })
-      } else {
-        return res.json({ exists: false })
-      }
-    } catch (error) {
-      console.error('Error al verificar la existencia de la planta:', error)
-      return res.status(500).json({ error: 'Error interno del servidor' })
     }
   }
 }
