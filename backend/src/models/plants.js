@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise'
 
-const config = mysql.createPool({
+const db = mysql.createPool({
   host: 'localhost',
   user: 'root',
   port: 3306,
@@ -13,15 +13,34 @@ const config = mysql.createPool({
 
 export class PlantsModel {
   static async getAll() {
-    const [plants] = await config.query(`SELECT * FROM plants;`)
+    const [plants] = await db.query(`SELECT * FROM user_plants;`)
     return Array.isArray(plants) ? plants : []
   }
 
   static async getById(id) {
-    const [plant] = await config.query(`SELECT * FROM plants WHERE id = ?;`, [
-      id
-    ])
-    return plant[0]
+    try {
+      const [userPlantRows] = await db.query(
+        `SELECT * FROM user_plants WHERE id = ?;`,
+        [id]
+      )
+      if (userPlantRows.length > 0) {
+        const userPlant = userPlantRows[0]
+        // obtener datos externos si existen
+        const [externalDataRows] = await db.query(
+          'SELECT * FROM external_plant_data WHERE common_name = ?',
+          [userPlant.common_name]
+        )
+        const externalData =
+          externalDataRows.length > 0 ? externalDataRows[0] : {}
+        return { userPlant, externalData }
+      } else {
+        res.status(404).json({ error: 'Planta no encontrada' })
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ error: 'Error al obtener la planta' + error.message })
+    }
   }
 
   static async addPlants(input) {
@@ -30,48 +49,77 @@ export class PlantsModel {
     }
 
     const {
-      name,
+      commonName,
       image,
-      last_watering_date,
-      watering_frequency,
-      last_fertilize_date,
-      fertilize_frequency,
-      min_temperature,
-      max_temperature
-    } = input
-
-    if (!image || typeof image !== 'string') {
-      console.warn(
-        'Advertencia: No se proporcionó una imagen válida, se asignará un valor por defecto.'
-      )
-    }
-
-    const [uuidResult] = await config.query(`SELECT UUID() uuid;`)
-    const [{ uuid }] = uuidResult
+      watering,
+      sunlight,
+      cycle,
+      edible,
+      toxicity,
+      description
+    } = input // Destructuramos los datos enviados por el frontend
 
     try {
-      await config.query(
-        `INSERT INTO plants (id, name, image, last_watering_date, watering_frequency, last_fertilize_date, fertilize_frequency, min_temperature, max_temperature)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`,
-        [
-          uuid,
-          name,
-          image || '',
-          last_watering_date,
-          watering_frequency,
-          last_fertilize_date,
-          fertilize_frequency,
-          min_temperature,
-          max_temperature
-        ]
+      // Verificamos si la planta ya existe en la base de datos del usuario
+      const [existingPlant] = await db.query(
+        'SELECT * FROM user_plants WHERE common_name = ?',
+        [commonName]
       )
+
+      let plantId
+
+      if (existingPlant.length > 0) {
+        plantId = existingPlant[0].id
+      } else {
+        const [insertResult] = await db.query(
+          'INSERT INTO user_plants (common_name, image) VALUES (?, ?)',
+          [commonName, image]
+        )
+        plantId = insertResult.insertId
+      }
+
+      const [existingExternalData] = await db.query(
+        'SELECT * FROM external_plant_data WHERE common_name = ?',
+        [commonName]
+      )
+
+      // Guardamos los datos externos que nos vienen del frontend (que fueron obtenidos de la API externa)
+      if (existingExternalData.length === 0) {
+        await db.query(
+          'INSERT INTO external_plant_data (common_name, watering, sunlight, cycle, edible, toxicity, description, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          [
+            commonName,
+            watering,
+            sunlight,
+            cycle,
+            edible,
+            toxicity,
+            description,
+            'Frontend' // Fuente de los datos
+          ]
+        )
+      }
+
+      // Obtenemos los datos de la planta externa actualizada
+      const [updatedExternalData] = await db.query(
+        'SELECT * FROM external_plant_data WHERE common_name = ?',
+        [commonName]
+      )
+
+      const externalData =
+        updatedExternalData.length > 0 ? updatedExternalData[0] : {}
+
+      return {
+        success: true,
+        data: {
+          plantId,
+          commonName,
+          ...externalData
+        }
+      }
     } catch (error) {
-      console.error('Error al insertar en la base de datos:', error)
-      throw new Error('Error añadiendo planta')
+      console.error('Error al añadir planta:', error)
+      throw error
     }
-    const [plants] = await config.query(`SELECT * FROM plants WHERE id = ?;`, [
-      uuid
-    ])
-    return plants[0]
   }
 }

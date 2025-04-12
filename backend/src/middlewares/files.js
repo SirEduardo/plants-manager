@@ -16,7 +16,7 @@ const Storage = (folder) => {
     cloudinary: cloudinary.v2, // Asegurar que usas cloudinary.v2
     params: {
       folder: folder,
-      esource_type: 'auto',
+      resource_type: 'auto',
       allowed_formats: ['jpg', 'png', 'jpeg', 'webp']
     }
   })
