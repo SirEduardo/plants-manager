@@ -1,4 +1,4 @@
-import cloudinary from 'cloudinary/v2'
+import cloudinary from 'cloudinary'
 
 export const deleteFiles = (url) => {
   const imgSplited = url.split('/')

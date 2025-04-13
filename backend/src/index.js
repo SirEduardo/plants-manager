@@ -8,7 +8,8 @@ const app = express()
 
 const allowedOrigins = [
   'https://plants-manager-front.vercel.app',
-  'https://plants-manager-front-rcniu06fm-sireduardos-projects.vercel.app'
+  'https://plants-manager-front-rcniu06fm-sireduardos-projects.vercel.app',
+  'http://localhost:5173'
 ]
 
 const corsOptions = {

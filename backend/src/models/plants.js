@@ -109,7 +109,14 @@ export class PlantsModel {
     }
   }
 
-  static async deletePLants() {
+  static async deletePLants(id) {
+    const [plantRows] = await db.query(
+      `SELECT * FROM user_plants WHERE id = ?`,
+      [id]
+    )
+    const plant = plantRows[0]
+    if (!plant) return null
     await db.query(`DELETE FROM user_plants WHERE id = ?`, [id])
+    return plant
   }
 }

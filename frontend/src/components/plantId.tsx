@@ -1,7 +1,8 @@
 import { useNavigate, useParams } from 'react-router'
 import { Plants } from '../types'
 import { useEffect, useState } from 'react'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Trash2Icon } from 'lucide-react'
+import axios from 'axios'
 
 //import plantsData from '../plants.json'
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
@@ -25,6 +26,10 @@ export function PlantId() {
   }, [id])
 
   const handleBack = () => {
+    navigate('/')
+  }
+  const handleDelete = async () => {
+    await axios.delete(`http://localhost:3000/plants/${id}`)
     navigate('/')
   }
 
@@ -55,9 +60,15 @@ export function PlantId() {
             </div>
 
             <div className="p-6">
+              <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold text-green-400 mb-4">
                 {plant.common_name}
               </h2>
+                <Trash2Icon
+                  onClick={handleDelete}
+                  className="text-red-400 cursor-pointer"
+                ></Trash2Icon>
+              </div>
 
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
