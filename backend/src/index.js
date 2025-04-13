@@ -6,13 +6,23 @@ import plantsRouter from './routes/plants.js'
 
 const app = express()
 
+const allowedOrigins = [
+  'https://plants-manager-front.vercel.app',
+  'https://plants-manager-front-rcniu06fm-sireduardos-projects.vercel.app'
+]
+
 app.use(
   cors({
-    origin: 'https://plants-manager-front.vercel.app', // o '*' para permitir todo (no recomendado en producción)
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true // si usas cookies/autenticación
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    }
   })
 )
+
 app.use(express.json())
 
 app.get('/', (req, res) => {
