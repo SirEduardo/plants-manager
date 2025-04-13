@@ -1,15 +1,4 @@
-import mysql from 'mysql2/promise'
-
-const db = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  port: 3306,
-  password: '',
-  database: 'plantsmanagerdb',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 10
-})
+import { db } from '../database/db.js'
 
 export class PlantsModel {
   static async getAll() {
