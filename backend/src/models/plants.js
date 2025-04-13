@@ -45,7 +45,6 @@ export class PlantsModel {
       watering,
       sunlight,
       location,
-      cycle,
       edible,
       toxicity,
       description
@@ -79,13 +78,12 @@ export class PlantsModel {
       // Guardamos los datos externos que nos vienen del frontend (que fueron obtenidos de la API externa) si no existiera
       if (existingExternalData.length === 0) {
         await db.query(
-          'INSERT INTO external_plant_data (common_name, watering, sunlight, location, cycle, edible, toxicity, description, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          'INSERT INTO external_plant_data (common_name, watering, sunlight, location, edible, toxicity, description, source) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)',
           [
             commonName,
             watering,
             sunlight,
             location,
-            cycle,
             edible,
             toxicity,
             description,

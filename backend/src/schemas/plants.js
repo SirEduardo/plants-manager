@@ -8,7 +8,6 @@ export const plantSchema = z.object({
   watering: z.string().optional().default('unknown'),
   sunlight: z.string().optional().default('unknown'),
   location: z.boolean().optional(),
-  cycle: z.string().optional().default('unknown'),
   edible: z.string().optional().default('unknown'),
   toxicity: z.string().optional().default('unknown'),
   description: z.string().optional().default('No description available')
