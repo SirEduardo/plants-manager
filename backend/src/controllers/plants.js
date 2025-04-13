@@ -1,5 +1,6 @@
 import { PlantsModel } from '../models/plants.js'
 import { validatePlant } from '../schemas/plants.js'
+import { deleteFiles } from '../utils/deleteFiles.js'
 
 export class PlantsController {
   static async getAll(req, res) {
@@ -55,5 +56,16 @@ export class PlantsController {
         .status(500)
         .json({ error: 'Internal Server Error', message: error.message })
     }
+  }
+  static async delete(req, res) {
+    const { id } = req.params
+    const deletedPlant = await PlantsModel.deletePLants(id)
+    if (!deletedPlant) {
+      return res.status(404).json({ message: 'Failed to find plant' })
+    }
+    if (deletedPlant.image) {
+      deleteFiles(deletedPlant.image)
+    }
+    return res.status(200).json(deletedPlant)
   }
 }

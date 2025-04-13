@@ -108,4 +108,8 @@ export class PlantsModel {
       throw error
     }
   }
+
+  static async deletePLants() {
+    await db.query(`DELETE FROM user_plants WHERE id = ?`, [id])
+  }
 }
