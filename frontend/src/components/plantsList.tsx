@@ -58,9 +58,11 @@ export const PlantsList = () => {
           <p className="text-gray-500 text-sm text-center mb-6">
             Añade tu primera planta para comenzar tu jardín virtual
           </p>
-          <button className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors">
-            Añadir planta
-          </button>
+          <Link to={'/add-plants'}>
+            <button className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors cursor-pointer">
+              Añadir planta
+            </button>
+          </Link>
         </div>
       )}
     </div>
