@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 
 //import plantsData from '../plants.json'
-//const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
 export function PlantId() {
   const { id } = useParams<{ id: string }>()
@@ -15,7 +15,7 @@ export function PlantId() {
 
   useEffect(() => {
     const fetchPlantById = async () => {
-      const response = await fetch(`http://localhost:3000/plants/${id}`)
+      const response = await fetch(`${apiUrl}/plants/${id}`)
       const res = await response.json()
       setPlant(res.userPlant)
       setPlantDetail(res.externalData)

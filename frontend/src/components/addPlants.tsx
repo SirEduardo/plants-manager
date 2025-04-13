@@ -12,7 +12,7 @@ import {
 import { Form } from './form'
 import { translateToEnglish } from './fetch/translateToEnglish'
 
-//const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
 export default function AddPlants() {
   const [formData, setFormData] = useState({
@@ -95,7 +95,7 @@ export default function AddPlants() {
       setFormData((prev) => ({ ...prev, plantDetails }))
 
       const form = Form(formData, plantDetails)
-      const response = await axios.post(`http://localhost:3000/plants`, form, {
+      const response = await axios.post(`${apiUrl}/plants`, form, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

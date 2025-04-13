@@ -9,7 +9,7 @@ export const PlantsList = () => {
   const [plants, setPlants] = useState([])
   useEffect(() => {
     const fetchPlants = async () => {
-      const response = await fetch(`http://localhost:3000/plants`)
+      const response = await fetch(`${apiUrl}/plants`)
       const res = await response.json()
       console.log(res)
 
