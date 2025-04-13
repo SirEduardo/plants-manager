@@ -6,7 +6,13 @@ import plantsRouter from './routes/plants.js'
 
 const app = express()
 
-app.use(cors())
+app.use(
+  cors({
+    origin: 'https://plants-manager-front.vercel.app', // o '*' para permitir todo (no recomendado en producción)
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true // si usas cookies/autenticación
+  })
+)
 app.use(express.json())
 
 app.get('/', (req, res) => {
