@@ -38,7 +38,7 @@ export function Login({ activeTab }: LoginProps) {
         // Esperamos a que la cookie esté disponible verificando con /auth
         const authResponse = await fetch(`${apiUrl}/auth`, {
           method: 'GET',
-          withCredentials: true
+          credentials: "include"
         })
 
         if (authResponse.status === 200) {
