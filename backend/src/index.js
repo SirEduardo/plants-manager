@@ -2,7 +2,10 @@ import dotenv from 'dotenv'
 dotenv.config()
 import express from 'express'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import plantsRouter from './routes/plants.js'
+import userRouter from './routes/user.js'
+import authenticateUser from './utils/auth.js'
 
 const app = express()
 
@@ -19,17 +22,22 @@ const corsOptions = {
     } else {
       callback(new Error('Not allowed by CORS'))
     }
-  }
+  },
+  credentials: true
 }
 
 app.use(cors(corsOptions))
-
+app.use(cookieParser())
 app.use(express.json())
 
 app.get('/', (req, res) => {
   res.send('hola mundo')
 })
 app.use('/plants', plantsRouter)
+app.use('/users', userRouter)
+app.get('/auth', authenticateUser, (req, res) => {
+  res.sendStatus(200)
+})
 
 const PORT = process.env.PORT ?? 3000
 app.listen(PORT, () => {
