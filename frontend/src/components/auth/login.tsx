@@ -36,7 +36,7 @@ export function Login({ activeTab }: LoginProps) {
         console.log('Usuario autenticado, verificando token...')
 
         // Esperamos a que la cookie esté disponible verificando con /auth
-        const authResponse = await fetch('http://localhost:3000/auth', {
+        const authResponse = await fetch(`${apiUrl}/auth`, {
           method: 'GET',
           credentials: 'include'
         })
