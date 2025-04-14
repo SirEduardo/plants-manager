@@ -31,7 +31,7 @@ export function PlantId() {
     navigate('/plantsList')
   }
   const handleDelete = async () => {
-    await axios.delete(`http://localhost:3000/plants/${id}`)
+    await axios.delete(`${apiUrl}/plants/${id}`)
     navigate('/plantsList')
   }
 
