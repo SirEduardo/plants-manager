@@ -1,28 +1,29 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "package.json",
-        "use": "@vercel/static-build",
-        "config": {
-          "distDir": "dist"
-        }
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
       }
-    ],
-    "routes": [
-        {
-            "src": "/api/(.*)",
-            "dest": "https://vercel.com/sireduardos-projects/plants-manager-back/api/$1"
-          },
-      
-      {
-        "src": "/(.*)",
-        "dest": "/$1"
-      }
-    ],
-    
-      "rewrites": [
-        { "source": "/(.*)", "destination": "/" }
-      ]
-    
-  }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://plants-manager-back.vercel.app/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "rewrites": [
+
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
+}
