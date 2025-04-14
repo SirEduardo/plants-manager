@@ -33,11 +33,23 @@ export function Login({ activeTab }: LoginProps) {
 
       // Si el login es exitoso, redirigimos a la lista de plantas
       if (loginResponse.status === 200) {
-        console.log('Usuario autenticado, redirigiendo...')
+        console.log('Usuario autenticado, verificando token...')
+
+        // Esperamos a que la cookie esté disponible verificando con /auth
+        const authResponse = await fetch('http://localhost:3000/auth', {
+          method: 'GET',
+          credentials: 'include'
+        })
+
+        if (authResponse.status === 200) {
+          console.log('Token verificado. Redirigiendo...')
         navigate('/plantsList')
+        } else {
+          console.error('El token no fue verificado aún. No redirigimos.')
+        }
       } else {
         console.error(
-          'Error al iniciar sesión después del registro',
+          'Error al iniciar sesión después del login',
           loginResponse
         )
       }
