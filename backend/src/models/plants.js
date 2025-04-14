@@ -1,8 +1,15 @@
 import { db } from '../database/db.js'
+import {
+  fetchExternalDataId,
+  fetchExternalDetails
+} from '../server/perenualService.js'
 
 export class PlantsModel {
-  static async getAll() {
-    const [plants] = await db.query(`SELECT * FROM user_plants;`)
+  static async getAll(userId) {
+    const [plants] = await db.query(
+      `SELECT * FROM user_plants WHERE user_id = ?`,
+      [userId]
+    )
     return Array.isArray(plants) ? plants : []
   }
 
@@ -32,29 +39,18 @@ export class PlantsModel {
     }
   }
 
-  static async addPlants(input) {
+  static async addPlants(input, user_id) {
     if (!input) {
       throw new Error('No se recibió ningún dato para añadir la planta')
     }
 
-    const {
-      commonName,
-      image,
-      last_watering_date,
-      last_fertilize_date,
-      watering,
-      sunlight,
-      location,
-      edible,
-      toxicity,
-      description
-    } = input // Destructuramos los datos enviados por el frontend
+    const { commonName, image, last_watering_date, last_fertilize_date } = input // Destructuramos los datos enviados por el frontend
 
     try {
       // Verificamos si la planta ya existe en la base de datos del usuario
       const [existingPlant] = await db.query(
         'SELECT * FROM user_plants WHERE common_name = ?',
-        [commonName]
+        [user_id, commonName]
       )
 
       let plantId
@@ -64,21 +60,37 @@ export class PlantsModel {
         plantId = existingPlant[0].id
       } else {
         const [insertResult] = await db.query(
-          'INSERT INTO user_plants (common_name, image, last_watering_date, last_fertilize_date) VALUES (?, ?, ?, ?)',
-          [commonName, image, last_watering_date, last_fertilize_date]
+          'INSERT INTO user_plants (user_id, common_name, image, last_watering_date, last_fertilize_date) VALUES (?, ?, ?, ?, ?)',
+          [user_id, commonName, image, last_watering_date, last_fertilize_date]
         )
         plantId = insertResult.insertId
       }
 
-      const [existingExternalData] = await db.query(
+      let [existingExternalData] = await db.query(
         'SELECT * FROM external_plant_data WHERE common_name = ?',
         [commonName]
       )
 
       // Guardamos los datos externos que nos vienen del frontend (que fueron obtenidos de la API externa) si no existiera
       if (existingExternalData.length === 0) {
+        console.log(
+          `📡 La información de "${commonName}" no existía localmente. Obteniendo desde API externa...`
+        )
+        const plantIdFromApi = await fetchExternalDataId(commonName)
+        const externalDetails = await fetchExternalDetails(plantIdFromApi)
+
+        const watering = externalDetails?.watering ?? 'unknown'
+        const sunlight = Array.isArray(externalDetails?.sunlight)
+          ? externalDetails.sunlight.join(', ')
+          : externalDetails?.sunlight ?? 'unknown'
+        const location = externalDetails?.indoor ? 'indoor' : 'outdoor'
+        const edible = externalDetails?.edible_fruit ?? false
+        const toxicity = externalDetails?.poisonous_to_humans ?? 'unknown'
+        const description =
+          externalDetails?.description ?? 'No description available.'
+
         await db.query(
-          'INSERT INTO external_plant_data (common_name, watering, sunlight, location, edible, toxicity, description, source) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)',
+          'INSERT INTO external_plant_data (common_name, watering, sunlight, location, edible, toxicity, description, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
           [
             commonName,
             watering,
@@ -87,21 +99,43 @@ export class PlantsModel {
             edible,
             toxicity,
             description,
-            'Frontend' // Fuente de los datos
+            'API externa'
           ]
         )
-      }
 
-      const externalData =
-        existingExternalData.length > 0 ? existingExternalData[0] : {}
+        // Refrescamos el resultado para devolverlo
+        ;[existingExternalData] = await db.query(
+          'SELECT * FROM external_plant_data WHERE common_name = ?',
+          [commonName]
+        )
+      } else {
+        console.log(
+          `💾 Información de "${commonName}" obtenida desde la base de datos local.`
+        )
+      }
+      const [joinedData] = await db.query(
+        `SELECT 
+          up.id AS plantId,
+          up.common_name,
+          up.image,
+          up.last_watering_date,
+          up.last_fertilize_date,
+          epd.watering,
+          epd.sunlight,
+          epd.location,
+          epd.edible,
+          epd.toxicity,
+          epd.description,
+          epd.source
+        FROM user_plants up
+        LEFT JOIN external_plant_data epd ON up.common_name = epd.common_name
+        WHERE up.id = ?`,
+        [plantId]
+      )
 
       return {
         success: true,
-        data: {
-          plantId,
-          commonName,
-          ...externalData
-        }
+        data: joinedData
       }
     } catch (error) {
       console.error('Error al añadir planta:', error)

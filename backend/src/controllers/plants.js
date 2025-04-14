@@ -1,11 +1,19 @@
 import { PlantsModel } from '../models/plants.js'
 import { validatePlant } from '../schemas/plants.js'
+import {
+  fetchExternalDataId,
+  fetchExternalDetails
+} from '../server/perenualService.js'
 import { deleteFiles } from '../utils/deleteFiles.js'
 
 export class PlantsController {
   static async getAll(req, res) {
+    const userId = req.userId
+    if (!userId) {
+      return res.status(400).json({ error: 'Usuario no autenticado' })
+    }
     try {
-      const plants = await PlantsModel.getAll()
+      const plants = await PlantsModel.getAll(userId)
       if (plants.length === 0) {
         res.status(404).json({ error: 'No hay plantas' })
       }
@@ -46,8 +54,9 @@ export class PlantsController {
       } else {
         data.image = null // Puedes definir una imagen por defecto si lo deseas
       }
+      data.user_id = req.userId
       console.log('Datos a insertar en la BD:', data)
-      const newPlant = await PlantsModel.addPlants(data)
+      const newPlant = await PlantsModel.addPlants(data, data.user_id)
 
       return res.status(201).json(newPlant)
     } catch (error) {
@@ -57,6 +66,53 @@ export class PlantsController {
         .json({ error: 'Internal Server Error', message: error.message })
     }
   }
+  static async getOrFetchPlantDetails(req, res) {
+    const { commonName } = req.query
+    try {
+      // Buscar en DB
+      const [existingExternalData] = await db.query(
+        'SELECT * FROM external_plant_data WHERE LOWER(common_name) = LOWER(?)',
+        [commonName]
+      )
+
+      if (existingExternalData.length > 0) {
+        console.log('Informacion insertada desde la base de datos local')
+        return res.status(200).json(existingExternalData[0])
+      }
+
+      // Si no está, usar API externa
+      const plantId = await fetchExternalDataId(commonName)
+      const externalDetails = await fetchExternalDetails(plantId)
+
+      if (!externalDetails) {
+        return res
+          .status(404)
+          .json({ message: 'Planta no encontrada en la API externa' })
+      }
+
+      // Guardar en base de datos
+      await db.query(
+        'INSERT INTO external_plant_data (common_name, watering, sunlight, location, edible, toxicity, description, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [
+          commonName,
+          externalDetails.watering ?? 'unknown',
+          externalDetails.sunlight?.join(', ') ?? 'unknown',
+          externalDetails.indoor ?? 'unknown',
+          externalDetails.edible_fruit ?? false,
+          externalDetails.poisonous_to_humans ?? 'unknown',
+          externalDetails.description ?? 'No description available.',
+          'External API'
+        ]
+      )
+      console.log('Informacion insertada desde la api externa')
+
+      return res.status(200).json(externalDetails)
+    } catch (err) {
+      console.error('Error buscando o guardando detalles:', err)
+      return res.status(500).json({ message: 'Error interno del servidor' })
+    }
+  }
+
   static async delete(req, res) {
     const { id } = req.params
     const deletedPlant = await PlantsModel.deletePLants(id)
