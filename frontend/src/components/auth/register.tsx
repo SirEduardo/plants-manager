@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { AuthTab } from '../../types'
 import axios from 'axios'
 import { useNavigate } from 'react-router'
-
+const apiUrl = import.meta.env.VITE_API_URL
 interface RegisterProps {
   activeTab: AuthTab
 }
@@ -24,7 +24,7 @@ export function Register({ activeTab }: RegisterProps) {
     try {
       // Realizamos el registro
       const registerResponse = await axios.post(
-        'http://localhost:3000/users/register',
+        `${apiUrl}/users/register`,
         formData,
         {
           headers: {
@@ -39,7 +39,7 @@ export function Register({ activeTab }: RegisterProps) {
 
         // Intentamos hacer login automáticamente después del registro
         const loginResponse = await axios.post(
-          'http://localhost:3000/users/login',
+          `${apiUrl}/users/login`,
           formData,
           {
             headers: {

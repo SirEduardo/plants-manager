@@ -5,14 +5,9 @@ import { Calendar, Droplets, Leaf } from 'lucide-react'
 import { Header } from './Header'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
-import {
-  fetchExternalDataId,
-  fetchExternalDetails
-} from './fetch/getExternalData'
-import { Form } from './form'
 import { translateToEnglish } from './fetch/translateToEnglish'
 
-const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+const apiUrl = import.meta.env.VITE_API_URL
 
 export default function AddPlants() {
   const [formData, setFormData] = useState({
@@ -47,68 +42,43 @@ export default function AddPlants() {
   }
 
   // Manejador del formulario
+  // Manejador del formulario
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      let plantDetails = {
-        watering: 'unknown',
-        sunlight: ['unknown'],
-        cycle: 'unknown',
-        edible_fruit: false,
-        poisonous_to_humans: 'unknown',
-        description: 'No description available.',
-        location: 'unknown'
+      let plantNameInEnglish = formData.commonName
+
+      // Si el nombre está en español, traducimos antes de enviar
+      if (isSpanish(formData.commonName)) {
+        plantNameInEnglish = await translateToEnglish(formData.commonName)
+        console.log(`Nombre traducido a inglés: ${plantNameInEnglish}`)
       }
 
-      try {
-        let plantNameInEnglish = formData.commonName
+      // Preparamos el FormData para enviar
+      const form = new FormData()
+      form.append('commonName', plantNameInEnglish)
+      if (formData.image) form.append('image', formData.image)
+      form.append('last_watering_date', formData.last_watering_date)
+      form.append('watering_frequency', formData.watering_frequency)
+      form.append('last_fertilize_date', formData.last_fertilize_date)
+      form.append('fertilize_frequency', formData.fertilize_frequency)
 
-        // Si el nombre se introdujo en español, lo traducimos a inglés
-        if (isSpanish(formData.commonName)) {
-          plantNameInEnglish = await translateToEnglish(formData.commonName)
-          console.log(`Nombre traducido a inglés: ${plantNameInEnglish}`)
-        }
-
-        // Intentamos obtener el ID de la planta con el nombre traducido
-        const plantId = await fetchExternalDataId(plantNameInEnglish)
-
-        const externalDetails = await fetchExternalDetails(plantId)
-        if (externalDetails) {
-          plantDetails = {
-            watering: externalDetails.watering ?? 'unknown',
-            sunlight: externalDetails.sunlight ?? ['unknown'],
-            cycle: externalDetails.cycle ?? 'unknown',
-            edible_fruit: externalDetails.edible_fruit ?? false,
-            location: externalDetails.indoor ?? false,
-            poisonous_to_humans:
-              externalDetails.poisonous_to_humans ?? 'unknown',
-            description:
-              externalDetails.description ?? 'No description available.'
-          }
-        }
-      } catch (error) {
-        console.warn(
-          'No se pudieron obtener detalles externos, se usan valores por defecto.'
-        )
-      }
-      setFormData((prev) => ({ ...prev, plantDetails }))
-
-      const form = Form(formData, plantDetails)
       const response = await axios.post(`${apiUrl}/plants`, form, {
         headers: {
           'Content-Type': 'multipart/form-data'
-        }
+        },
+        withCredentials: true
       })
-      console.log('Response from backend:', response)
+
       if (response.status === 201) {
-        console.log('Planta añadida exitosamente', response.data)
-        navigate('/')
+        console.log('✅ Planta añadida correctamente')
+        navigate('/plantsList')
       } else {
-        console.error('Error al añadir la planta en el front', response.data)
+        console.error('❌ Error al añadir la planta', response.data)
       }
     } catch (error) {
-      console.error('Hubo un error al enviar la solicitud', error)
+      console.error('❌ Error en el envío del formulario:', error)
     }
   }
 

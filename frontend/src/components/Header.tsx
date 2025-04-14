@@ -1,15 +1,16 @@
 import { Home, LogOut, PlusCircle } from 'lucide-react'
-import { Link, useLocation } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 
 export function Header() {
   const { pathname } = useLocation()
+  const navigate = useNavigate()
   return (
     <header className="bg-gray-800/80 backdrop-blur-sm sticky top-0 z-10 border-b border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo/Brand */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/plantsList" className="flex items-center gap-2">
               <div className="bg-green-500 p-1.5 rounded-md">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -33,17 +34,17 @@ export function Header() {
           {/* Navigation */}
           <div className="flex items-center gap-3 sm:gap-4">
             <Link
-              to={pathname === '/' ? '/add-plants' : '/'}
+              to={pathname === '/plantsList' ? '/add-plants' : '/plantsList'}
               className={`
                 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors
                 ${
-                  pathname === '/' || pathname === '/add-plants'
+                  pathname === '/plantsList' || pathname === '/add-plants'
                     ? 'bg-green-500/10 text-green-400 hover:bg-green-500/20'
                     : 'text-gray-300 hover:bg-gray-700'
                 }
               `}
             >
-              {pathname === '/' ? (
+              {pathname === '/plantsList' ? (
                 <>
                   <PlusCircle size={18} />
                   <span className="hidden sm:block">Añadir plantas</span>
@@ -57,9 +58,10 @@ export function Header() {
             </Link>
 
             <button
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors cursor-pointer"
               onClick={() => {
                 /* Logout logic here */
+                navigate('/')
               }}
             >
               <LogOut size={18} />

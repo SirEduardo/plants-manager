@@ -18,6 +18,8 @@ export function PlantId() {
     const fetchPlantById = async () => {
       const response = await fetch(`${apiUrl}/plants/${id}`)
       const res = await response.json()
+      console.log(res)
+
       setPlant(res.userPlant)
       setPlantDetail(res.externalData)
       console.log(res)
@@ -26,11 +28,11 @@ export function PlantId() {
   }, [id])
 
   const handleBack = () => {
-    navigate('/')
+    navigate('/plantsList')
   }
   const handleDelete = async () => {
-    await axios.delete(`${apiUrl}/plants/${id}`)
-    navigate('/')
+    await axios.delete(`http://localhost:3000/plants/${id}`)
+    navigate('/plantsList')
   }
 
   const formatDate = (date: string) => {
@@ -61,9 +63,9 @@ export function PlantId() {
 
             <div className="p-6">
               <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-green-400 mb-4">
-                {plant.common_name}
-              </h2>
+                <h2 className="text-2xl font-bold text-green-400 mb-4">
+                  {plant.common_name}
+                </h2>
                 <Trash2Icon
                   onClick={handleDelete}
                   className="text-red-400 cursor-pointer"

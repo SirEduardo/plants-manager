@@ -15,3 +15,5 @@ export interface Plants {
     toxicity: string
     location: boolean
 }
+
+export type AuthTab = 'login' | 'register'

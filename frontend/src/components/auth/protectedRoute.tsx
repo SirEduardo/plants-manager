@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Navigate, Outlet } from 'react-router'
-
+const apiUrl = import.meta.env.VITE_API_URL
 export function ProtectedRoute() {
   const [isAuthenticate, setIsAuthenticate] = useState<Boolean | null>(null)
 
   useEffect(() => {
-    fetch('http://localhost:3000/auth', {
+    fetch(`${apiUrl}/auth`, {
       method: 'GET',
       credentials: 'include'
     })

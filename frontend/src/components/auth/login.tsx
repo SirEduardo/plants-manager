@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { AuthTab } from '../../types'
 import axios from 'axios'
-
+const apiUrl = import.meta.env.VITE_API_URL
 interface LoginProps {
   activeTab: AuthTab
 }
@@ -20,7 +20,7 @@ export function Login({ activeTab }: LoginProps) {
     e.preventDefault()
     try {
       const loginResponse = await axios.post(
-        'http://localhost:3000/users/login',
+        `${apiUrl}/users/login`,
         formData,
         {
           headers: {

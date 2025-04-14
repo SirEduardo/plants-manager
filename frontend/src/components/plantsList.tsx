@@ -1,19 +1,23 @@
 import { Link } from 'react-router'
-
 import { useEffect, useState } from 'react'
 import { Plants } from '../types'
 import { Leaf } from 'lucide-react'
+import axios from 'axios'
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
 export const PlantsList = () => {
   const [plants, setPlants] = useState([])
   useEffect(() => {
     const fetchPlants = async () => {
-      const response = await fetch(`${apiUrl}/plants`)
-      const res = await response.json()
-      console.log(res)
+      const response = await axios.get(`${apiUrl}/plants`, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        withCredentials: true
+      })
 
-      setPlants(res)
+      console.log(response.data)
+      setPlants(response.data)
     }
     fetchPlants()
   }, [])
