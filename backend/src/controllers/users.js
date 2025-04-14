@@ -50,4 +50,15 @@ export class UserController {
       res.status(401).send({ error: error.message })
     }
   }
+
+  static async logout(req, res) {
+    res
+      .clearCookie('token', {
+        httpOnly: true,
+        secure: (process.env.NODE_ENV = 'production'),
+        sameSite: 'None'
+      })
+      .status(200)
+      .send({ message: 'Sessión cerrada correctamente' })
+  }
 }

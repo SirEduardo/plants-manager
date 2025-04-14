@@ -5,5 +5,6 @@ const userRouter = Router()
 
 userRouter.post('/login', UserController.login)
 userRouter.post('/register', UserController.register)
+userRouter.post('/logout', UserController.logout)
 
 export default userRouter

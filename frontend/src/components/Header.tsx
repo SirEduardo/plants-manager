@@ -1,6 +1,6 @@
 import { Home, LogOut, PlusCircle } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router'
-
+const apiUrl = import.meta.env.VITE_API_URL
 export function Header() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -59,9 +59,16 @@ export function Header() {
 
             <button
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors cursor-pointer"
-              onClick={() => {
-                /* Logout logic here */
-                navigate('/')
+              onClick={async () => {
+                try {
+                  await fetch(`${apiUrl}/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                  })
+                  navigate('/')
+                } catch (error) {
+                  console.error('Error al cerrar sesión', error)
+                }
               }}
             >
               <LogOut size={18} />
