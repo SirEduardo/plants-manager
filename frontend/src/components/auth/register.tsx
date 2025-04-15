@@ -14,8 +14,7 @@ export function Register({ activeTab }: RegisterProps) {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   })
   const navigate = useNavigate()
 
@@ -161,26 +160,6 @@ export function Register({ activeTab }: RegisterProps) {
                     <Eye className="h-4 w-4" />
                   )}
                 </button>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-green-700"
-              >
-                Confirm Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-green-500" />
-                <input
-                  id="confirmPassword"
-                  type={showPassword ? 'text' : 'password'}
-                  className="w-full rounded-md border border-green-200 bg-white py-2 pl-10 pr-4 text-green-900 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                />
               </div>
             </div>
             <button
