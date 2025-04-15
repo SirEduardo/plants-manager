@@ -1,7 +1,6 @@
 import { UserModel } from '../models/users.js'
 import jwt from 'jsonwebtoken'
 import { validatePartialUser, validateUser } from '../schemas/users.js'
-import { generateToken } from '../utils/token.js'
 
 export class UserController {
   static async register(req, res) {
@@ -41,7 +40,7 @@ export class UserController {
       res
         .cookie('access_token', token, {
           httpOnly: true,
-          secure: (process.env.NODE_ENV === 'production'),
+          secure: process.env.NODE_ENV === 'production',
           sameSite: 'None'
         })
         .status(200)
