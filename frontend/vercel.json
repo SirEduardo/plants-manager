@@ -9,21 +9,14 @@
       }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "https://plants-manager-back.vercel.app/api/$1"
+      "source": "/api/(.*)",
+      "destination": "https://plants-manager-back.vercel.app/api/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
-  "rewrites": [
-
-    {
       "source": "/(.*)",
-      "destination": "/"
+      "destination": "/index.html"
     }
   ]
 }
