@@ -1,16 +1,22 @@
 import pkg from 'pg'
 const { Pool } = pkg
-import mysql from 'mysql2/promise'
 
-// import { URL } from 'url'
+const isLocal = process.env.NODE_ENV !== 'production'
+
+const localConnection = 'postgres://postgres@localhost:5432/PlantsManagerDB'
+const prodConnection = process.env.DATABASE_URL
 
 export const db = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  connectionString: isLocal ? localConnection : prodConnection,
+  ssl: isLocal
+    ? false
+    : {
+        rejectUnauthorized: false
+      }
 })
 
+//import mysql from 'mysql2/promise'
+// import { URL } from 'url'
 // const dbUrl = new URL(
 //   'mysql://root:gaNxHtcsXksCxioUYVuqUZimGFeJAzrN@yamanote.proxy.rlwy.net:50027/railway'
 // )
