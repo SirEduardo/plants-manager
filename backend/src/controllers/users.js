@@ -40,8 +40,9 @@ export class UserController {
       res
         .cookie('access_token', token, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'None'
+          secure: process.env.NODE_ENV === 'production' || false,
+          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
+          path: '/'
         })
         .status(200)
         .send({ user, token })
@@ -52,10 +53,11 @@ export class UserController {
 
   static async logout(req, res) {
     res
-      .clearCookie('token', {
+      .clearCookie('access_token', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'None'
+        secure: process.env.NODE_ENV === 'production' || false,
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
+        path: '/'
       })
       .status(200)
       .send({ message: 'Sessión cerrada correctamente' })

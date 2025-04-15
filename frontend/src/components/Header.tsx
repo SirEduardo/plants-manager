@@ -62,7 +62,7 @@ export function Header() {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors cursor-pointer"
               onClick={async () => {
                 try {
-                  await fetch(`${apiUrl}/logout`, {
+                  await fetch(`${apiUrl}/users/logout`, {
                     method: 'POST',
                     credentials: 'include'
                   })

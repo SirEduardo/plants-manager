@@ -95,7 +95,7 @@ export function Register({ activeTab }: RegisterProps) {
                 htmlFor="username"
                 className="block text-sm font-medium text-green-700"
               >
-                Full Name
+                Username
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-green-500" />
