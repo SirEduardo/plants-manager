@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Plants } from '../types'
 import { Leaf } from 'lucide-react'
 import axios from 'axios'
-const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+import { apiUrl } from '../api/url'
 
 export const PlantsList = () => {
   const [plants, setPlants] = useState([])

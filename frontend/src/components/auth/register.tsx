@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { AuthTab } from '../../types'
 import axios from 'axios'
 import { useNavigate } from 'react-router'
-const apiUrl = import.meta.env.VITE_API_URL
+import { apiUrl } from '../../api/url'
+
 interface RegisterProps {
   activeTab: AuthTab
 }

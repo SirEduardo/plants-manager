@@ -6,8 +6,7 @@ import { Header } from './Header'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
 import { translateToEnglish } from './fetch/translateToEnglish'
-
-const apiUrl = import.meta.env.VITE_API_URL
+import { apiUrl } from '../api/url'
 
 export default function AddPlants() {
   const [formData, setFormData] = useState({

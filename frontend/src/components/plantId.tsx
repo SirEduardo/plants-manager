@@ -3,9 +3,7 @@ import { Plants } from '../types'
 import { useEffect, useState } from 'react'
 import { ArrowLeft, Trash2Icon } from 'lucide-react'
 import axios from 'axios'
-
-//import plantsData from '../plants.json'
-const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+import { apiUrl } from '../api/url'
 
 export function PlantId() {
   const { id } = useParams<{ id: string }>()

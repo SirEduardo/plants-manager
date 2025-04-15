@@ -1,6 +1,7 @@
 import { Home, LogOut, PlusCircle } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router'
-const apiUrl = import.meta.env.VITE_API_URL
+import { apiUrl } from '../api/url'
+
 export function Header() {
   const { pathname } = useLocation()
   const navigate = useNavigate()

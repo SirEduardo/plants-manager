@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { AuthTab } from '../../types'
 import axios from 'axios'
-const apiUrl = import.meta.env.VITE_API_URL
+import { apiUrl } from '../../api/url'
 interface LoginProps {
   activeTab: AuthTab
 }
@@ -43,7 +43,7 @@ export function Login({ activeTab }: LoginProps) {
 
         if (authResponse.status === 200) {
           console.log('Token verificado. Redirigiendo...')
-        navigate('/plantsList')
+          navigate('/plantsList')
         } else {
           console.error('El token no fue verificado aún. No redirigimos.')
         }
