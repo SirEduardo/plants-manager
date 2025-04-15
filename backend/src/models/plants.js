@@ -6,8 +6,8 @@ import {
 
 export class PlantsModel {
   static async getAll(userId) {
-    const [plants] = await db.query(
-      `SELECT * FROM user_plants WHERE user_id = ?`,
+    const { rows: plants } = await db.query(
+      `SELECT * FROM user_plants WHERE user_id = $1`,
       [userId]
     )
     return Array.isArray(plants) ? plants : []
@@ -15,15 +15,15 @@ export class PlantsModel {
 
   static async getById(id) {
     try {
-      const [userPlantRows] = await db.query(
-        `SELECT * FROM user_plants WHERE id = ?;`,
+      const { rows: userPlantRows } = await db.query(
+        `SELECT * FROM user_plants WHERE id = $1;`,
         [id]
       )
       if (userPlantRows.length > 0) {
         const userPlant = userPlantRows[0]
         // obtener datos externos si existen
-        const [externalDataRows] = await db.query(
-          'SELECT * FROM external_plant_data WHERE common_name = ?',
+        const { rows: externalDataRows } = await db.query(
+          'SELECT * FROM external_plant_data WHERE common_name = $1',
           [userPlant.common_name]
         )
         const externalData =
@@ -48,8 +48,8 @@ export class PlantsModel {
 
     try {
       // Verificamos si la planta ya existe en la base de datos del usuario
-      const [existingPlant] = await db.query(
-        'SELECT * FROM user_plants WHERE common_name = ?',
+      const { rows: existingPlant } = await db.query(
+        'SELECT * FROM user_plants WHERE user_id = $1 AND common_name = $2',
         [user_id, commonName]
       )
 
@@ -59,15 +59,15 @@ export class PlantsModel {
       if (existingPlant.length > 0) {
         plantId = existingPlant[0].id
       } else {
-        const [insertResult] = await db.query(
-          'INSERT INTO user_plants (user_id, common_name, image, last_watering_date, last_fertilize_date) VALUES (?, ?, ?, ?, ?)',
+        const insertResult = await db.query(
+          'INSERT INTO user_plants (user_id, common_name, image, last_watering_date, last_fertilize_date) VALUES ($1, $2, $3, $4, $5) RETURNING id',
           [user_id, commonName, image, last_watering_date, last_fertilize_date]
         )
-        plantId = insertResult.insertId
+        plantId = insertResult.rows[0].id
       }
 
-      let [existingExternalData] = await db.query(
-        'SELECT * FROM external_plant_data WHERE common_name = ?',
+      let { rows: existingExternalData } = await db.query(
+        'SELECT * FROM external_plant_data WHERE common_name = $1',
         [commonName]
       )
 
@@ -90,7 +90,7 @@ export class PlantsModel {
           externalDetails?.description ?? 'No description available.'
 
         await db.query(
-          'INSERT INTO external_plant_data (common_name, watering, sunlight, location, edible, toxicity, description, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          'INSERT INTO external_plant_data (common_name, watering, sunlight, location, edible, toxicity, description, source) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
           [
             commonName,
             watering,
@@ -104,16 +104,17 @@ export class PlantsModel {
         )
 
         // Refrescamos el resultado para devolverlo
-        ;[existingExternalData] = await db.query(
-          'SELECT * FROM external_plant_data WHERE common_name = ?',
+        const result = await db.query(
+          'SELECT * FROM external_plant_data WHERE common_name = $1',
           [commonName]
         )
+        existingExternalData = result.rows
       } else {
         console.log(
           `💾 Información de "${commonName}" obtenida desde la base de datos local.`
         )
       }
-      const [joinedData] = await db.query(
+      const { rows: joinedData } = await db.query(
         `SELECT 
           up.id AS plantId,
           up.common_name,
@@ -129,7 +130,7 @@ export class PlantsModel {
           epd.source
         FROM user_plants up
         LEFT JOIN external_plant_data epd ON up.common_name = epd.common_name
-        WHERE up.id = ?`,
+        WHERE up.id = $1`,
         [plantId]
       )
 
@@ -144,13 +145,13 @@ export class PlantsModel {
   }
 
   static async deletePLants(id) {
-    const [plantRows] = await db.query(
-      `SELECT * FROM user_plants WHERE id = ?`,
+    const { rows: plantRows } = await db.query(
+      `SELECT * FROM user_plants WHERE id = $1`,
       [id]
     )
     const plant = plantRows[0]
     if (!plant) return null
-    await db.query(`DELETE FROM user_plants WHERE id = ?`, [id])
+    await db.query(`DELETE FROM user_plants WHERE id = $1`, [id])
     return plant
   }
 }

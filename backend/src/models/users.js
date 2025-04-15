@@ -7,8 +7,8 @@ export class UserModel {
   static async createUser(username, password, email) {
     const id = crypto.randomUUID()
     const hashedPassword = await bcrypt.hash(password, 10)
-    const [existingUser] = await db.query(
-      'SELECT * FROM users WHERE username = ? OR email = ?',
+    const { rows: existingUser } = await db.query(
+      'SELECT * FROM users WHERE username = $1 OR email = $2',
       [username, email]
     )
     if (existingUser.length > 0) {
@@ -17,8 +17,8 @@ export class UserModel {
       )
     }
 
-    const userQuery = `INSERT INTO users (id, username, password, email) VALUES (?, ?, ?, ?)`
-    const [userResult] = await db.query(userQuery, [
+    const userQuery = `INSERT INTO users (id, username, password, email) VALUES ($1, $2, $3, $4)`
+    const { rows: userResult } = await db.query(userQuery, [
       id,
       username,
       hashedPassword,
@@ -31,9 +31,10 @@ export class UserModel {
   }
 
   static async loginUser(username, password) {
-    const [user] = await db.query('SELECT * FROM users WHERE username = ?', [
-      username
-    ])
+    const { rows: user } = await db.query(
+      'SELECT * FROM users WHERE username = $1',
+      [username]
+    )
     if (user.length === 0) throw new Error('Username or password are incorrect')
 
     const isValid = await bcrypt.compare(password, user[0].password)
