@@ -41,8 +41,7 @@ export class UserController {
         .cookie('access_token', token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production' || false,
-          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
-          path: '/'
+          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict'
         })
         .status(200)
         .send({ user, token })
@@ -56,8 +55,7 @@ export class UserController {
       .clearCookie('access_token', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production' || false,
-        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
-        path: '/'
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict'
       })
       .status(200)
       .send({ message: 'Sessión cerrada correctamente' })
