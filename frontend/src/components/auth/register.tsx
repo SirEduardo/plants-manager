@@ -23,6 +23,7 @@ export function Register({ activeTab }: RegisterProps) {
     e.preventDefault()
 
     try {
+      console.log('Datos del formulario:', formData)
       // Realizamos el registro
       const registerResponse = await axios.post(
         `${apiUrl}/users/register`,
@@ -62,6 +63,7 @@ export function Register({ activeTab }: RegisterProps) {
         }
       } else {
         console.error('Error al registrar el usuario', registerResponse)
+        alert('Error al registrar el usuario: ' + registerResponse.data.message)
       }
     } catch (error) {
       console.error('Error en el envío del formulario', error)

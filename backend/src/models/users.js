@@ -7,6 +7,7 @@ export class UserModel {
   static async createUser(username, password, email) {
     const id = crypto.randomUUID()
     const hashedPassword = await bcrypt.hash(password, 10)
+
     const { rows: existingUser } = await db.query(
       'SELECT * FROM users WHERE username = $1 OR email = $2',
       [username, email]
