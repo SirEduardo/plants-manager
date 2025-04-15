@@ -10,7 +10,7 @@ import authenticateUser from './utils/auth.js'
 const app = express()
 
 const allowedOrigins = [
-  'https://plants-manager-gamma.vercel.app',
+  'https://plants-manager-front.vercel.app',
   'http://localhost:5173'
 ]
 
