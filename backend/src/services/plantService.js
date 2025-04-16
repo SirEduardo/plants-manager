@@ -1,8 +1,8 @@
 export function shouldWater(plant) {
   const wateringDays = {
-    frecuente: 0,
-    media: 0,
-    minima: 0
+    frecuente: 2,
+    media: 5,
+    minima: 10
   }
 
   const dias = wateringDays[plant.watering] || 7
