@@ -41,7 +41,7 @@ export class UserController {
         .cookie('access_token', token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production' || false,
-          sameSite: 'None'
+          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict'
         })
         .status(200)
         .send({ user, token })
