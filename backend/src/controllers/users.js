@@ -15,7 +15,6 @@ export class UserController {
       const id = await UserModel.createUser(username, password, email)
       res.status(201).send({ id })
     } catch (error) {
-      // No mandar error al cliente
       console.log(error)
       res.status(400).send({ message: error.message })
     }
@@ -40,13 +39,13 @@ export class UserController {
       res
         .cookie('access_token', token, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production' || false,
+          secure: process.env.NODE_ENV === 'production' ? true : false,
           sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict'
         })
         .status(200)
         .send({ user, token })
     } catch (error) {
-      res.status(401).send({ error: error.message })
+      res.status(400).send({ message: error.message })
     }
   }
 

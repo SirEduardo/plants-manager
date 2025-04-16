@@ -36,10 +36,10 @@ export class UserModel {
       'SELECT * FROM users WHERE email = $1',
       [email]
     )
-    if (user.length === 0) throw new Error('Username or password are incorrect')
+    if (user.length === 0) throw new Error('Usuario o contraseña incorrectos')
 
     const isValid = await bcrypt.compare(password, user[0].password)
-    if (!isValid) throw new Error('Username or password are incorrect')
+    if (!isValid) throw new Error('Usuario o contraseña incorrectos')
 
     const { password: _, ...publicUser } = user[0]
     return publicUser
