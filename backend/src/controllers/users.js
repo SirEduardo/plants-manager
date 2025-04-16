@@ -26,12 +26,12 @@ export class UserController {
       console.log('Detalles del error:', result.error.errors)
       return res.status(400).json({ error: result.error.errors })
     }
-    const { username, password } = req.body
+    const { email, password } = req.body
     try {
-      const user = await UserModel.loginUser(username, password)
+      const user = await UserModel.loginUser(email, password)
 
       const token = jwt.sign(
-        { id: user.id, username: user.username },
+        { id: user.id, email: user.email },
         process.env.JWT_SECRET,
         {
           expiresIn: '1y'

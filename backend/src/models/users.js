@@ -31,10 +31,10 @@ export class UserModel {
     return id
   }
 
-  static async loginUser(username, password) {
+  static async loginUser(email, password) {
     const { rows: user } = await db.query(
-      'SELECT * FROM users WHERE username = $1',
-      [username]
+      'SELECT * FROM users WHERE email = $1',
+      [email]
     )
     if (user.length === 0) throw new Error('Username or password are incorrect')
 
