@@ -64,6 +64,9 @@ export function Register({ activeTab }: RegisterProps) {
         console.error('Error al registrar el usuario', registerResponse)
         alert('Error al registrar el usuario: ' + registerResponse.data.message)
       }
+      if (registerResponse.status === 400) {
+        console.error('Este Usuario ya existe')
+      }
     } catch (error) {
       console.error('Error en el envío del formulario', error)
     }
@@ -83,9 +86,11 @@ export function Register({ activeTab }: RegisterProps) {
       {activeTab === 'register' && (
         <form onSubmit={handleRegister} className="p-6">
           <div className="mb-6 text-center">
-            <h2 className="text-xl font-bold text-green-800">Create Account</h2>
+            <h2 className="text-xl font-bold text-green-800">
+              Crear Cuenta Nueva
+            </h2>
             <p className="text-sm text-green-600">
-              Join us to start tracking your plants
+              Únete para empezar a gestionar tus plantas!
             </p>
           </div>
 
@@ -95,7 +100,7 @@ export function Register({ activeTab }: RegisterProps) {
                 htmlFor="username"
                 className="block text-sm font-medium text-green-700"
               >
-                Username
+                Nombre de Usuario
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-green-500" />
@@ -137,7 +142,7 @@ export function Register({ activeTab }: RegisterProps) {
                 htmlFor="password"
                 className="block text-sm font-medium text-green-700"
               >
-                Password
+                Contraseña
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-green-500" />
@@ -166,7 +171,7 @@ export function Register({ activeTab }: RegisterProps) {
               type="submit"
               className="w-full rounded-md bg-green-600 py-2 text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 cursor-pointer"
             >
-              Create Account
+              Crear Cuenta
             </button>
           </div>
         </form>

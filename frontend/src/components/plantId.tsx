@@ -37,6 +37,10 @@ export function PlantId() {
     const d = new Date(date)
     return d.toLocaleDateString('es-ES') // "dd/mm/yyyy"
   }
+
+  const capitalize = (val: string) => {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1)
+  }
   return (
     <div className="min-h-svh bg-gradient-to-b from-gray-800 to-gray-900 text-white p-6">
       <button
@@ -80,19 +84,23 @@ export function PlantId() {
                   </div>
                   <div className="bg-gray-700/50 p-3 rounded-lg">
                     <p className="text-xs text-gray-400">Frecuencia de riego</p>
-                    <p className="font-medium">{plantDetail.watering} días</p>
+                    <p className="font-medium">
+                      {capitalize(plantDetail.watering)} dias
+                    </p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-gray-700/50 p-3 rounded-lg">
                     <p className="text-xs text-gray-400">Luz solar</p>
-                    <p className="font-medium">{plantDetail.sunlight}</p>
+                    <p className="font-medium">
+                      {capitalize(plantDetail.sunlight)}
+                    </p>
                   </div>
                   <div className="bg-gray-700/50 p-3 rounded-lg">
                     <p className="text-xs text-gray-400">Localización</p>
                     <p className="font-medium">
-                      {plantDetail.location === true ? 'Interior' : 'Exterior'}
+                      {capitalize(plantDetail.location)}
                     </p>
                   </div>
                 </div>
@@ -109,7 +117,7 @@ export function PlantId() {
                   <div className="bg-gray-700/50 p-3 rounded-lg">
                     <p className="text-xs text-gray-400">Frecuencia</p>
                     <p className="font-medium">
-                      {plant.fertilize_frequency} días
+                      {capitalize(plant.fertilize_frequency)}
                     </p>
                   </div>
                 </div>

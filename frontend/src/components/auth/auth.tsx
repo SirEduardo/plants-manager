@@ -11,7 +11,7 @@ export function Auth() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-gray-800 to-gray-900 px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md overflow-hidden rounded-xl bg-white shadow-lg">
         {/* Logo and App Name */}
-        <div className="bg-green-500 opacity-85 p-4 text-center">
+        <div className="bg-green-600 p-4 text-center">
           <div className="flex items-center justify-center space-x-2">
             <Leaf className="h-8 w-8 text-white" />
             <h1 className="text-2xl font-bold text-white">PlantCare</h1>
@@ -31,7 +31,7 @@ export function Auth() {
                 : 'bg-white text-green-600 hover:bg-green-50'
             }`}
           >
-            Login
+            Iniciar Sesión
           </button>
           <button
             onClick={() => setActiveTab('register')}
@@ -41,7 +41,7 @@ export function Auth() {
                 : 'bg-white text-green-600 hover:bg-green-50'
             }`}
           >
-            Register
+            Registrarse
           </button>
         </div>
 

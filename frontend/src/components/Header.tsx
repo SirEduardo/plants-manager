@@ -1,6 +1,7 @@
 import { Home, LogOut, PlusCircle } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { apiUrl } from '../api/url'
+import { Notifications } from './notifications'
 
 export function Header() {
   const { pathname } = useLocation()
@@ -57,6 +58,7 @@ export function Header() {
                 </>
               ) : null}
             </Link>
+            <Notifications />
 
             <button
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors cursor-pointer"

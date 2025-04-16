@@ -13,7 +13,15 @@ export interface Plants {
     descritpion: string
     sunlight: string
     toxicity: string
-    location: boolean
+    location: string
 }
 
 export type AuthTab = 'login' | 'register'
+
+export interface Notification {
+    id: number
+    title: string
+    message: string
+    status: boolean
+    created_at: string
+}

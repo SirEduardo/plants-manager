@@ -14,9 +14,7 @@ export default function AddPlants() {
     image: null as File | null,
     externalData: null as any,
     last_watering_date: '',
-    watering_frequency: '',
-    last_fertilize_date: '',
-    fertilize_frequency: ''
+    last_fertilize_date: ''
   })
 
   const navigate = useNavigate()
@@ -59,9 +57,7 @@ export default function AddPlants() {
       form.append('commonName', plantNameInEnglish)
       if (formData.image) form.append('image', formData.image)
       form.append('last_watering_date', formData.last_watering_date)
-      form.append('watering_frequency', formData.watering_frequency)
       form.append('last_fertilize_date', formData.last_fertilize_date)
-      form.append('fertilize_frequency', formData.fertilize_frequency)
 
       const response = await axios.post(`${apiUrl}/plants`, form, {
         headers: {
@@ -150,25 +146,6 @@ export default function AddPlants() {
                 </div>
                 <div className="space-y-2">
                   <label
-                    htmlFor="watering_frequency"
-                    className="text-green-700 flex items-center gap-1 text-sm font-medium"
-                  >
-                    <Droplets className="h-4 w-4" />
-                    Frecuencia de Riego (días)
-                  </label>
-                  <input
-                    id="watering_frequency"
-                    type="number"
-                    placeholder="7"
-                    value={formData.watering_frequency}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-green-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label
                     htmlFor="last_fertilize_date"
                     className="text-green-700 flex items-center gap-1 text-sm font-medium"
                   >
@@ -179,23 +156,6 @@ export default function AddPlants() {
                     id="last_fertilize_date"
                     type="date"
                     value={formData.last_fertilize_date}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-green-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label
-                    htmlFor="fertilize_frequency"
-                    className="text-green-700 flex items-center gap-1 text-sm font-medium"
-                  >
-                    <Droplets className="h-4 w-4" />
-                    Frecuencia de Fertilización (días)
-                  </label>
-                  <input
-                    id="fertilize_frequency"
-                    type="number"
-                    placeholder="7"
-                    value={formData.fertilize_frequency}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-green-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />

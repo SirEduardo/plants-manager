@@ -10,7 +10,7 @@ interface LoginProps {
 
 export function Login({ activeTab }: LoginProps) {
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: ''
   })
   const [showPassword, setShowPassword] = useState(false)
@@ -38,7 +38,7 @@ export function Login({ activeTab }: LoginProps) {
         // Esperamos a que la cookie esté disponible verificando con /auth
         const authResponse = await fetch(`${apiUrl}/auth`, {
           method: 'GET',
-          credentials: "include"
+          credentials: 'include'
         })
 
         if (authResponse.status === 200) {
@@ -70,28 +70,28 @@ export function Login({ activeTab }: LoginProps) {
       {activeTab === 'login' && (
         <form onSubmit={handleLogin} className="p-6">
           <div className="mb-6 text-center">
-            <h2 className="text-xl font-bold text-green-800">Welcome Back</h2>
+            <h2 className="text-xl font-bold text-green-800">Bienvenido</h2>
             <p className="text-sm text-green-600">
-              Login to manage your plants
+              Inicia sesión para ver tus plantas
             </p>
           </div>
 
           <div className="space-y-4">
             <div className="space-y-2">
               <label
-                htmlFor="username"
+                htmlFor="email"
                 className="block text-sm font-medium text-green-700"
               >
-                Username
+                Email
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-green-500" />
                 <input
-                  id="username"
+                  id="email"
                   type="text"
                   placeholder="name@example.com"
                   className="w-full rounded-md border border-green-200 bg-white py-2 pl-10 pr-4 text-green-900 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
-                  value={formData.username}
+                  value={formData.email}
                   onChange={handleChange}
                   required
                 />
@@ -104,7 +104,7 @@ export function Login({ activeTab }: LoginProps) {
                   htmlFor="password"
                   className="block text-sm font-medium text-green-700"
                 >
-                  Password
+                  Contraseña
                 </label>
                 <a
                   href="#"
@@ -141,7 +141,7 @@ export function Login({ activeTab }: LoginProps) {
               type="submit"
               className="w-full rounded-md bg-green-600 py-2 text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 cursor-pointer"
             >
-              Login
+              Iniciar Sesión
             </button>
           </div>
         </form>
