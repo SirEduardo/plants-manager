@@ -3,7 +3,7 @@ import { validatePlant } from '../schemas/plants.js'
 import {
   fetchExternalDataId,
   fetchExternalDetails
-} from '../server/perenualService.js'
+} from '../services/perenualService.js'
 import { deleteFiles } from '../utils/deleteFiles.js'
 
 export class PlantsController {

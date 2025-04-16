@@ -2,7 +2,9 @@ import { db } from '../database/db.js'
 import {
   fetchExternalDataId,
   fetchExternalDetails
-} from '../server/perenualService.js'
+} from '../services/perenualService.js'
+import { translateField } from '../utils/translatedFields.js'
+import { NotificationModel } from './notification.js'
 
 export class PlantsModel {
   static async getAll(userId) {
@@ -64,6 +66,12 @@ export class PlantsModel {
           [user_id, commonName, image, last_watering_date, last_fertilize_date]
         )
         plantId = insertResult.rows[0].id
+        console.log('📬 Creando notificación...')
+        await NotificationModel.createNotification(
+          user_id,
+          'Nueva planta añadida',
+          `Has añadido correctamente ${commonName}`
+        )
       }
 
       let { rows: existingExternalData } = await db.query(
@@ -79,15 +87,24 @@ export class PlantsModel {
         const plantIdFromApi = await fetchExternalDataId(commonName)
         const externalDetails = await fetchExternalDetails(plantIdFromApi)
 
-        const watering = externalDetails?.watering ?? 'unknown'
-        const sunlight = Array.isArray(externalDetails?.sunlight)
-          ? externalDetails.sunlight.join(', ')
-          : externalDetails?.sunlight ?? 'unknown'
-        const location = externalDetails?.indoor ? 'indoor' : 'outdoor'
+        const rawWatering =
+          externalDetails?.watering?.toLowerCase() ?? 'unknown'
+        const rawSunlight = Array.isArray(externalDetails?.sunlight)
+          ? externalDetails.sunlight.map((s) => s.toLowerCase())
+          : [externalDetails?.sunlight?.toLowerCase() ?? 'unknown']
+
+        const rawLocation = externalDetails?.indoor ? 'indoor' : 'outdoor'
+
+        const watering = translateField.watering[rawWatering] ?? 'desconocido'
+        const sunlight = rawSunlight
+          .map((s) => translateField.sunlight[s] ?? s)
+          .join(', ')
+        const location = translateField.location[rawLocation] ?? 'desconocido'
+
         const edible = externalDetails?.edible_fruit ?? false
-        const toxicity = externalDetails?.poisonous_to_humans ?? 'unknown'
+        const toxicity = externalDetails?.poisonous_to_humans ?? 'desconocido'
         const description =
-          externalDetails?.description ?? 'No description available.'
+          externalDetails?.description ?? 'No hay descripción disponible.'
 
         await db.query(
           'INSERT INTO external_plant_data (common_name, watering, sunlight, location, edible, toxicity, description, source) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
@@ -153,5 +170,12 @@ export class PlantsModel {
     if (!plant) return null
     await db.query(`DELETE FROM user_plants WHERE id = $1`, [id])
     return plant
+  }
+
+  static async getPlantsWithWateringInfo() {
+    const { rows: plantRows } = await db.query(
+      `SELECT up.id AS plantId, up.user_id, up.common_name, up.last_watering_date, epd.watering FROM user_plants up LEFT JOIN external_plant_data epd ON up.common_name = epd.common_name`
+    )
+    return plantRows
   }
 }

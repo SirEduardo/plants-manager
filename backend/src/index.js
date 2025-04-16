@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import plantsRouter from './routes/plants.js'
 import userRouter from './routes/user.js'
 import authenticateUser from './utils/auth.js'
+import notificationRoutes from './routes/notification.js'
 
 const app = express()
 
@@ -34,6 +35,7 @@ app.get('/', (req, res) => {
 })
 app.use('/plants', plantsRouter)
 app.use('/users', userRouter)
+app.use('/notifications', notificationRoutes)
 app.get('/auth', authenticateUser, (req, res) => {
   res.sendStatus(200)
 })
