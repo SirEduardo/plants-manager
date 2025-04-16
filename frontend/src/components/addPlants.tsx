@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Calendar, Droplets, Leaf } from 'lucide-react'
+import { Calendar, Leaf } from 'lucide-react'
 import { Header } from './Header'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
