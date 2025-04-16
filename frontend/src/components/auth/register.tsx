@@ -16,6 +16,7 @@ export function Register({ activeTab }: RegisterProps) {
     email: '',
     password: ''
   })
+  const [error, setError] = useState(null)
   const navigate = useNavigate()
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -67,8 +68,15 @@ export function Register({ activeTab }: RegisterProps) {
       if (registerResponse.status === 400) {
         console.error('Este Usuario ya existe')
       }
-    } catch (error) {
-      console.error('Error en el envío del formulario', error)
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessage = error.response.data.message || 'Error desconocido'
+        setError(errorMessage)
+        console.error('Error del backend:', errorMessage)
+      } else {
+        console.error('Error inesperado:', error)
+        alert('Ocurrió un error inesperado')
+      }
     }
   }
 
@@ -82,7 +90,6 @@ export function Register({ activeTab }: RegisterProps) {
 
   return (
     <div>
-      {/* Register Form */}
       {activeTab === 'register' && (
         <form onSubmit={handleRegister} className="p-6">
           <div className="mb-6 text-center">
@@ -174,6 +181,9 @@ export function Register({ activeTab }: RegisterProps) {
               Crear Cuenta
             </button>
           </div>
+          {error ? (
+            <p className="text-center text-red-500 p-5">{error}</p>
+          ) : null}
         </form>
       )}
     </div>

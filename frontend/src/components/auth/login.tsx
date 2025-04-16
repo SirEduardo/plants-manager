@@ -14,6 +14,7 @@ export function Login({ activeTab }: LoginProps) {
     password: ''
   })
   const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState(null)
   const navigate = useNavigate()
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -53,8 +54,15 @@ export function Login({ activeTab }: LoginProps) {
           loginResponse
         )
       }
-    } catch (error) {
-      console.error('Error en el envío del formulario', error)
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessage = error.response.data.message || 'Error desconocido'
+        setError(errorMessage)
+        console.error('Error del backend:', errorMessage)
+      } else {
+        console.error('Error inesperado:', error)
+        alert('Ocurrió un error inesperado')
+      }
     }
   }
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,6 +152,11 @@ export function Login({ activeTab }: LoginProps) {
               Iniciar Sesión
             </button>
           </div>
+          {error ? (
+            <p className="text-center text-red-500 pt-5">{error}</p>
+          ) : (
+            ''
+          )}
         </form>
       )}
     </div>
