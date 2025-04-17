@@ -1,12 +1,15 @@
 import { verifyToken } from './token.js'
 
 const authenticateUser = (req, res, next) => {
-  const token = req.cookies.access_token
-  if (!token) {
+  const authHeader = req.headers.authorization
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res
       .status(401)
-      .json({ message: 'Acceso denegado. No se encontró el token.' })
+      .json({ message: 'Acceso denegado. Token no proporcionado.' })
   }
+
+  const token = authHeader.split(' ')[1]
 
   try {
     const decoded = verifyToken(token) // Verificar el token

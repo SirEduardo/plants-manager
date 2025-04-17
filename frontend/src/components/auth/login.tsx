@@ -41,19 +41,12 @@ export function Login({ activeTab }: LoginProps) {
       console.log('respuesta del login', loginResponse)
 
       if (loginResponse.status === 200) {
-        console.log('Usuario autenticado, verificando token...')
+        const { token } = loginResponse.data
+        localStorage.setItem('token', token)
 
-        const authResponse = await axios.get(`${apiUrl}/auth`, {
-          withCredentials: true
-        })
+        console.log('Token guardado.')
 
-        if (authResponse.status === 200) {
-          console.log('Token verificado. Redirigiendo...')
-          navigate('/plantsList')
-        } else {
-          console.error('El token no fue verificado aún. No redirigimos.')
-          setError('Error de autenticación. Inténtalo de nuevo.')
-        }
+        navigate('/plantsList')
       } else {
         console.error(
           'Error al iniciar sesión después del login',

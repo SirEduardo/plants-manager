@@ -35,7 +35,6 @@ export class PlantsController {
 
   static async create(req, res) {
     const result = validatePlant(req.body)
-    console.log(result)
 
     if (!result.success) {
       console.log('Detalles del error:', result.error.errors)

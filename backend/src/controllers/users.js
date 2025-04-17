@@ -36,14 +36,7 @@ export class UserController {
           expiresIn: '1y'
         }
       )
-      res
-        .cookie('access_token', token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production' ? true : false,
-          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict'
-        })
-        .status(200)
-        .send({ user, token })
+      res.status(200).send({ user, token })
     } catch (error) {
       res.status(400).send({ message: error.message })
     }

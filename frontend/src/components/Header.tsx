@@ -30,10 +30,7 @@ export function Header() {
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true)
-      await fetch(`${apiUrl}/users/logout`, {
-        method: 'POST',
-        credentials: 'include'
-      })
+      localStorage.removeItem('token')
       navigate('/')
     } catch (error) {
       console.error('Error al cerrar sesión', error)

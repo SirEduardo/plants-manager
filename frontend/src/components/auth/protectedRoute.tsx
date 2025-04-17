@@ -6,9 +6,17 @@ export function ProtectedRoute() {
   const [isAuthenticate, setIsAuthenticate] = useState<Boolean | null>(null)
 
   useEffect(() => {
+    const token = localStorage.getItem('token')
+
+    if (!token) {
+      setIsAuthenticate(false)
+      return
+    }
     fetch(`${apiUrl}/auth`, {
       method: 'GET',
-      credentials: 'include'
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((res) => {
         if (res.status === 200) {

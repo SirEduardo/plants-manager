@@ -70,16 +70,9 @@ export function Register({ activeTab }: RegisterProps) {
 
         // Si el login es exitoso, redirigimos a la lista de plantas
         if (loginResponse.status === 200) {
-          console.log('Usuario autenticado, redirigiendo...')
+          const { token } = loginResponse.data
+          localStorage.setItem('token', token)
           navigate('/plantsList')
-        } else {
-          console.error(
-            'Error al iniciar sesión después del registro',
-            loginResponse
-          )
-          setError(
-            'Registro exitoso, pero hubo un problema al iniciar sesión automáticamente. Por favor, inicia sesión manualmente.'
-          )
         }
       } else {
         console.error('Error al registrar el usuario', registerResponse)
