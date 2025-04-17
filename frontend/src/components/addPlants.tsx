@@ -220,7 +220,7 @@ export default function AddPlants() {
               <div className="space-y-2">
                 <label className="text-green-400 text-sm font-medium block flex items-center gap-2">
                   <ImageIcon className="h-4 w-4" />
-                  Imagen
+                  Imagen<span className="text-red-400">*</span>
                 </label>
 
                 {!imagePreview ? (
@@ -283,7 +283,7 @@ export default function AddPlants() {
                     type="date"
                     value={formData.last_watering_date}
                     onChange={handleChange}
-                    className={`w-full px-3 py-2 bg-gray-700/70 border ${
+                    className={`w-full px-3 py-2 bg-gray-700/70 border cursor-pointer ${
                       errors.last_watering_date
                         ? 'border-red-500'
                         : 'border-gray-600'
@@ -308,7 +308,7 @@ export default function AddPlants() {
                     type="date"
                     value={formData.last_fertilize_date}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-700/70 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-white transition-all duration-200"
+                    className="w-full px-3 py-2 bg-gray-700/70 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-white transition-all duration-200 cursor-pointer"
                   />
                 </div>
               </div>
@@ -321,7 +321,7 @@ export default function AddPlants() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`px-6 py-2.5 ${
+                className={`px-6 py-2.5 cursor-pointer ${
                   isSubmitting
                     ? 'bg-gray-600 cursor-not-allowed'
                     : 'bg-green-600 hover:bg-green-700 hover:shadow-lg hover:shadow-green-600/20'

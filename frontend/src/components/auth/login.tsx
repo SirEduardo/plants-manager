@@ -202,7 +202,7 @@ export function Login({ activeTab }: LoginProps) {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full rounded-md ${
+              className={`w-full rounded-md cursor-pointer ${
                 isLoading
                   ? 'bg-gray-600 cursor-not-allowed'
                   : 'bg-green-600 hover:bg-green-700 hover:shadow-lg hover:shadow-green-600/20'
