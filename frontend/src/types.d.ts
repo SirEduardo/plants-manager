@@ -3,16 +3,17 @@ export interface Plants {
     common_name: string
     image: string 
     last_watering_date: string
-    watering: string
+    summer_watering: string
+    winter_watering: string
     last_fertilize_date: string
-    fertilize_frequency: string
+    fertilize: string
     min_temperature: number
     max_temperature: number
-    edible: number
-    cycle: string
-    descritpion: string
+    edible: boolean
+    description: string
     sunlight: string
-    toxicity: string
+    human_toxicity: boolean
+    animal_toxicity: boolean
     location: string
 }
 
