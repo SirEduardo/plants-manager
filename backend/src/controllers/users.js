@@ -33,7 +33,7 @@ export class UserController {
         { id: user.id, email: user.email },
         process.env.JWT_SECRET,
         {
-          expiresIn: '1y'
+          expiresIn: '1w'
         }
       )
       res.status(200).send({ user, token })

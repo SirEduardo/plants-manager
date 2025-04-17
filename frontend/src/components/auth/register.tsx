@@ -62,6 +62,7 @@ export function Register({ activeTab }: RegisterProps) {
           formData,
           {
             headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
               'Content-Type': 'application/json'
             },
             withCredentials: true
