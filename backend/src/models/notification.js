@@ -25,4 +25,12 @@ export class NotificationModel {
     )
     return notification
   }
+
+  static async deleteNotification(id) {
+    const { rows: notification } = await db.query(
+      'DELETE FROM notifications WHERE id = $1 RETURNING *',
+      [id]
+    )
+    return notification
+  }
 }

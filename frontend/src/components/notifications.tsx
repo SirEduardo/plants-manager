@@ -92,10 +92,20 @@ export function Notifications() {
   }
 
   // Esta función será implementada por el usuario
-  const handleDeleteNotification = (id: number, e: React.MouseEvent) => {
-    e.stopPropagation() // Evitar que el clic se propague
-    console.log('Eliminar notificación:', id)
-    // La lógica de eliminación será implementada por el usuario
+  const handleDeleteNotification = async (id: number, e: React.MouseEvent) => {
+    e.stopPropagation()
+    try {
+      const response = await axios.delete(`${apiUrl}/notifications/${id}`, {
+        withCredentials: true
+      })
+      console.log(response)
+      setNotifications((prev) =>
+        prev.filter((notification) => notification.id !== id)
+      )
+      console.log('Eliminar notificación:', id)
+    } catch (err) {
+      console.error('Error al eliminar la notificación', err)
+    }
   }
 
   const unreadCount = notifications.filter(
@@ -207,7 +217,7 @@ export function Notifications() {
                         onClick={(e) =>
                           handleDeleteNotification(notification.id, e)
                         }
-                        className="absolute right-3 top-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded-full hover:bg-red-500/20 text-gray-400 hover:text-red-400"
+                        className="absolute right-3 top-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded-full hover:bg-red-500/20 text-gray-400 hover:text-red-400 cursor-pointer"
                         aria-label="Eliminar notificación"
                       >
                         <Trash2 className="w-4 h-4" />

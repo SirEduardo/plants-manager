@@ -10,5 +10,6 @@ notificationRoutes.get(
   NotificationController.getUserNotification
 )
 notificationRoutes.patch('/:id', NotificationController.patchNotification)
+notificationRoutes.delete('/:id', NotificationController.deleteNotification)
 
 export default notificationRoutes

@@ -30,4 +30,16 @@ export class NotificationController {
         .json({ message: 'Error interno al obtener notificaciones' })
     }
   }
+
+  static async deleteNotification(req, res) {
+    const { id } = req.params
+    try {
+      await NotificationModel.deleteNotification(id)
+      return res.status(200).json({ message: 'Notificación eliminada' })
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: 'Error al intentar eliminar la notificación' })
+    }
+  }
 }
