@@ -263,6 +263,7 @@ export default function AddPlants() {
                   onChange={handleImageChange}
                   className="hidden"
                   accept="image/*"
+                  capture="environment"
                 />
 
                 {errors.image && (
