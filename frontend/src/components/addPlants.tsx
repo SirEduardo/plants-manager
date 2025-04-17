@@ -134,7 +134,8 @@ export default function AddPlants() {
 
       const response = await axios.post(`${apiUrl}/plants`, form, {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         withCredentials: true
       })

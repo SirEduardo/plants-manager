@@ -40,6 +40,10 @@ export function Notifications() {
         setIsLoading(true)
         setError(null)
         const response = await axios.get(`${apiUrl}/notifications`, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          },
           withCredentials: true
         })
         setNotifications(response.data.notification)

@@ -17,7 +17,8 @@ export const PlantsList = () => {
         setLoading(true)
         const response = await axios.get(`${apiUrl}/plants`, {
           headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
           },
           withCredentials: true
         })
