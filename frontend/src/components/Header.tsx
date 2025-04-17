@@ -2,7 +2,6 @@
 
 import { LogOut, Leaf, ChevronDown } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
-import { apiUrl } from '../api/url'
 import { Notifications } from './notifications'
 import { useState, useEffect } from 'react'
 
