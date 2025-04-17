@@ -1,13 +1,12 @@
 'use client'
 
-import { Home, LogOut, PlusCircle, Leaf, ChevronDown } from 'lucide-react'
-import { Link, useLocation, useNavigate } from 'react-router'
+import { LogOut, Leaf, ChevronDown } from 'lucide-react'
+import { Link, useNavigate } from 'react-router'
 import { apiUrl } from '../api/url'
 import { Notifications } from './notifications'
 import { useState, useEffect } from 'react'
 
 export function Header() {
-  const { pathname } = useLocation()
   const navigate = useNavigate()
   const [scrolled, setScrolled] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)

@@ -99,7 +99,7 @@ export function PlantId() {
               <div className="flex justify-end mb-4">
                 <button
                   onClick={handleDelete}
-                  className="bg-gray-700/50 hover:bg-red-900/30 p-2 rounded-full transition-colors duration-200 group"
+                  className="bg-gray-700/50 hover:bg-red-900/30 p-2 rounded-full transition-colors duration-200 group cursor-pointer"
                 >
                   <Trash2Icon
                     className="text-red-400 group-hover:text-red-300"
@@ -226,7 +226,7 @@ export function PlantId() {
                 {/* Botón para mostrar más información */}
                 <button
                   onClick={toggleMoreInfo}
-                  className="w-full bg-gray-700/50 hover:bg-gray-600/50 p-3 rounded-lg flex items-center justify-center gap-2 text-green-400 transition-all duration-200 border border-gray-600/30 hover:border-green-500/30 shadow-sm hover:shadow-md hover:shadow-green-900/10"
+                  className="w-full bg-gray-700/50 hover:bg-gray-600/50 p-3 rounded-lg flex items-center justify-center gap-2 text-green-400 transition-all duration-200 border border-gray-600/30 hover:border-green-500/30 shadow-sm hover:shadow-md hover:shadow-green-900/10 cursor-pointer"
                 >
                   <span>
                     {showMoreInfo

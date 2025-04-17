@@ -129,16 +129,11 @@ export function Notifications() {
               <h3 className="text-sm font-medium text-green-400 flex items-center gap-2">
                 <Bell className="w-4 h-4" />
                 Notificaciones
-                {unreadCount > 0 && (
-                  <span className="bg-green-500/20 text-green-400 text-xs px-2 py-0.5 rounded-full">
-                    {unreadCount} nueva{unreadCount !== 1 ? 's' : ''}
-                  </span>
-                )}
               </h3>
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
-                  className="text-xs font-medium text-green-400 hover:text-green-300 transition-colors duration-200 flex items-center gap-1"
+                  className="text-xs font-medium text-green-400 hover:text-green-300 transition-colors duration-200 flex items-center gap-1 cursor-pointer"
                 >
                   <Check className="w-3 h-3" />
                   <span>Marcar todas como leídas</span>
@@ -237,7 +232,7 @@ export function Notifications() {
           <div className="p-2 border-t border-gray-700/50 bg-gray-800/50">
             <button
               onClick={() => setShowNotifications(false)}
-              className="w-full py-1.5 text-xs text-gray-400 hover:text-gray-300 flex items-center justify-center gap-1 rounded-md hover:bg-gray-700/50 transition-colors duration-200"
+              className="w-full py-1.5 text-xs text-gray-400 hover:text-gray-300 flex items-center justify-center gap-1 rounded-md hover:bg-gray-700/50 transition-colors duration-200 cursor-pointer"
             >
               <X className="w-3 h-3" />
               <span>Cerrar</span>
