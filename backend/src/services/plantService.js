@@ -1,27 +1,37 @@
 export function shouldWater(plant) {
-  const wateringDays = {
-    '2-3': 2,
-    media: 5,
-    minima: 10
-  }
+  const now = new Date()
+  const month = now.getMonth() + 1
+  const isSummer = month >= 5 && month <= 9
 
-  const dias = wateringDays[plant.watering] || 7
+  const rawFrequency = isSummer
+    ? plant.summer_watering?.toloweCase()
+    : plant.winter_watering?.toloweCase()
+
+  const daysBetweenWatering = parseWateringFrequency(rawFrequency)
+
   const lastDate = new Date(plant.last_watering_date)
-  const today = new Date()
-
-  if (isNaN(lastDate)) {
-    console.warn(
-      `⚠️ Fecha inválida para la planta ${plant.common_name}: ${plant.last_watering_date}`
-    )
-    return { needsWatering: false }
+  const diffInDays = Math.floor((now - lastDate) / (1000 * 60 * 60 * 24))
+  return {
+    needsWatering: diffInDays >= daysBetweenWatering
   }
 
-  const diffInDays = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24))
-  console.log(
-    `🌿 ${plant.common_name}: ${diffInDays} días desde último riego, necesita cada ${dias} días.`
-  )
+  function parseWateringFrequency(text) {
+    if (!text) return 7
 
-  return {
-    needsWatering: diffInDays >= dias
+    //extraemos numeros del string
+    const match = text.match(/(\d+)(?:-(\d+))?\s*(días|semanas)?/)
+    if (!match) return 7
+
+    let [, min, max, unit] = match
+    min = parseInt(min)
+    max = max ? parseInt(max) : min
+
+    let avg = (min + max) / 2
+
+    if (unit?.includes('semana')) {
+      avg *= 7
+    }
+
+    return Math.round(avg)
   }
 }

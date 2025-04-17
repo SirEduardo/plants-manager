@@ -181,9 +181,9 @@ export class PlantsModel {
     return plant
   }
 
-  static async getPlantsWithWateringInfo() {
+  static async getPlantsWithInfo() {
     const { rows: plantRows } = await db.query(
-      `SELECT up.id AS plantId, up.user_id, up.common_name, up.last_watering_date, epd.watering FROM user_plants up LEFT JOIN external_plant_data epd ON up.common_name = epd.common_name`
+      `SELECT up.id AS plantId, up.user_id, up.common_name, up.last_watering_date, up.last_fertilize_date, p.summer_watering, p.winter_watering, p.fertilize FROM user_plants up LEFT JOIN plants p ON up.common_name = p.common_name`
     )
     return plantRows
   }
