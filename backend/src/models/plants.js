@@ -25,8 +25,8 @@ export class PlantsModel {
         const userPlant = userPlantRows[0]
         // obtener datos externos si existen
         const { rows: externalDataRows } = await db.query(
-          'SELECT * FROM external_plant_data WHERE common_name = $1',
-          [userPlant.common_name]
+          'SELECT * FROM plants WHERE common_name ILIKE $1',
+          [`%${userPlant.common_name}%`]
         )
         const externalData =
           externalDataRows.length > 0 ? externalDataRows[0] : {}
@@ -51,8 +51,8 @@ export class PlantsModel {
     try {
       // Verificamos si la planta ya existe en la base de datos del usuario
       const { rows: existingPlant } = await db.query(
-        'SELECT * FROM user_plants WHERE user_id = $1 AND common_name = $2',
-        [user_id, commonName]
+        'SELECT * FROM user_plants WHERE user_id = $1 AND common_name ILIKE $2',
+        [user_id, `%${commonName}%`]
       )
 
       let plantId
@@ -75,8 +75,8 @@ export class PlantsModel {
       }
 
       let { rows: existingExternalData } = await db.query(
-        'SELECT * FROM external_plant_data WHERE common_name = $1',
-        [commonName]
+        'SELECT * FROM plants WHERE common_name ILIKE $1',
+        [`%${commonName}%`]
       )
 
       // Guardamos los datos externos que nos vienen del frontend (que fueron obtenidos de la API externa) si no existiera
@@ -95,35 +95,42 @@ export class PlantsModel {
 
         const rawLocation = externalDetails?.indoor ? 'indoor' : 'outdoor'
 
-        const watering = translateField.watering[rawWatering] ?? 'desconocido'
+        const summer_watering =
+          translateField.watering[rawWatering] ?? 'desconocido'
+        const winter_watering =
+          translateField.watering[rawWatering] ?? 'desconocido'
         const sunlight = rawSunlight
           .map((s) => translateField.sunlight[s] ?? s)
           .join(', ')
         const location = translateField.location[rawLocation] ?? 'desconocido'
 
         const edible = externalDetails?.edible_fruit ?? false
-        const toxicity = externalDetails?.poisonous_to_humans ?? 'desconocido'
+        const human_toxicity =
+          externalDetails?.poisonous_to_humans ?? 'desconocido'
+        const animal_toxicity =
+          externalDetails?.poisonous_to_humans ?? 'desconocido'
         const description =
           externalDetails?.description ?? 'No hay descripción disponible.'
 
         await db.query(
-          'INSERT INTO external_plant_data (common_name, watering, sunlight, location, edible, toxicity, description, source) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+          'INSERT INTO plants (common_name, summer_watering, winter_watering, sunlight, location, edible, human_toxicity, animal_toxicity, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
           [
             commonName,
-            watering,
+            summer_watering,
+            winter_watering,
             sunlight,
             location,
             edible,
-            toxicity,
-            description,
-            'API externa'
+            human_toxicity,
+            animal_toxicity,
+            description
           ]
         )
 
         // Refrescamos el resultado para devolverlo
         const result = await db.query(
-          'SELECT * FROM external_plant_data WHERE common_name = $1',
-          [commonName]
+          'SELECT * FROM plants WHERE common_name ILIKE $1',
+          [`%${commonName}%`]
         )
         existingExternalData = result.rows
       } else {
@@ -138,15 +145,17 @@ export class PlantsModel {
           up.image,
           up.last_watering_date,
           up.last_fertilize_date,
-          epd.watering,
-          epd.sunlight,
-          epd.location,
-          epd.edible,
-          epd.toxicity,
-          epd.description,
-          epd.source
+          p.summer_watering,
+          p.winter_watering,
+          p.fertilize,
+          p.sunlight,
+          p.location,
+          p.edible,
+          p.human_toxicity,
+          p.animal_toxicity,
+          p.description
         FROM user_plants up
-        LEFT JOIN external_plant_data epd ON up.common_name = epd.common_name
+        LEFT JOIN plants p ON up.common_name = p.common_name
         WHERE up.id = $1`,
         [plantId]
       )

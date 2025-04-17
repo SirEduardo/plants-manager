@@ -46,9 +46,6 @@ export class PlantsController {
       if (!data) {
         return res.status(400).json({ error: 'Datos de planta inválidos' })
       }
-
-      data.edible = data.edible === 'true'
-      data.toxicity = data.toxicity === 'true'
       if (req.file) {
         data.image = req.file.path // Aquí se obtiene la URL de Cloudinary
       } else {
@@ -71,7 +68,7 @@ export class PlantsController {
     try {
       // Buscar en DB
       const [existingExternalData] = await db.query(
-        'SELECT * FROM external_plant_data WHERE LOWER(common_name) = LOWER(?)',
+        'SELECT * FROM plants WHERE LOWER(common_name) = LOWER(?)',
         [commonName]
       )
 
@@ -92,7 +89,7 @@ export class PlantsController {
 
       // Guardar en base de datos
       await db.query(
-        'INSERT INTO external_plant_data (common_name, watering, sunlight, location, edible, toxicity, description, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO plants (common_name, watering, sunlight, location, edible, toxicity, description, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
         [
           commonName,
           externalDetails.watering ?? 'unknown',
