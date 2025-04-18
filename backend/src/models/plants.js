@@ -25,7 +25,7 @@ export class PlantsModel {
         const userPlant = userPlantRows[0]
         // obtener datos externos si existen
         const { rows: externalDataRows } = await db.query(
-          'SELECT * FROM plants WHERE common_name ILIKE $1',
+          'SELECT * FROM plants WHERE unaccent(common_name) ILIKE unaccent($1)',
           [`%${userPlant.common_name}%`]
         )
         const externalData =
@@ -51,7 +51,7 @@ export class PlantsModel {
     try {
       // Verificamos si la planta ya existe en la base de datos del usuario
       const { rows: existingPlant } = await db.query(
-        'SELECT * FROM user_plants WHERE user_id = $1 AND common_name ILIKE $2',
+        'SELECT * FROM user_plants WHERE user_id = $1 AND unaccent(common_name) ILIKE unaccent($2)',
         [user_id, `%${commonName}%`]
       )
 
