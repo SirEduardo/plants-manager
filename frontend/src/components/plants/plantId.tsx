@@ -96,7 +96,7 @@ export function PlantId() {
               <div className="absolute bottom-0 left-0 right-0 p-4">
                 <div className="bg-gray-900/80 backdrop-blur-sm p-3 rounded-xl border border-gray-700/50 shadow-lg">
                   <h2 className="text-2xl font-bold text-green-400">
-                    {plant.common_name}
+                    {capitalize(plant.common_name)}
                   </h2>
                 </div>
               </div>

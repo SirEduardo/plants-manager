@@ -100,6 +100,9 @@ export const PlantsList = () => {
     const d = new Date(date)
     return d.toLocaleDateString('es-ES') // "dd/mm/yyyy"
   }
+  const capitalize = (val: string) => {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1)
+  }
 
   return (
     <div className="min-h-svh bg-gradient-to-b from-gray-800 via-gray-850 to-gray-900 text-white p-6">
@@ -158,7 +161,7 @@ export const PlantsList = () => {
                   </div>
                   <div className="p-4">
                     <h2 className="text-lg font-medium text-green-400 text-center group-hover:scale-105 transition-transform duration-300">
-                      {plant.common_name}
+                      {capitalize(plant.common_name)}
                     </h2>
                   </div>
                 </div>
