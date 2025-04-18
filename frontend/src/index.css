@@ -1,1 +1,8 @@
-@import "tailwindcss"
+@import "tailwindcss";
+
+body{
+height: 100%;
+margin: 0;
+overscroll-behavior: none;
+overflow-x: hidden;
+}
