@@ -122,4 +122,25 @@ export class PlantsModel {
     )
     return plantRows
   }
+
+  static async updatePlant(id, data) {
+    const keys = Object.keys(data)
+    const values = Object.values(data)
+
+    values.push(id)
+    const setClause = keys
+      .map((key, index) => `${key} = $${index + 1}`)
+      .join(', ')
+
+    const query = `
+      UPDATE user_plants
+      SET ${setClause}
+      WHERE id = $${keys.length + 1}
+      RETURNING *;
+    `
+
+    const { rows: plantRows } = await db.query(query, values)
+
+    return plantRows[0]
+  }
 }

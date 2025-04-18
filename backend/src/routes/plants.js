@@ -13,7 +13,7 @@ plantsRouter.post(
   PlantsController.create
 )
 plantsRouter.get('/:id', PlantsController.getById)
-plantsRouter.get('/internal', PlantsController.getOrFetchPlantDetails)
+plantsRouter.patch('/:id', PlantsController.patch)
 plantsRouter.delete('/:id', PlantsController.delete)
 
 export default plantsRouter

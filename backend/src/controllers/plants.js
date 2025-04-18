@@ -62,50 +62,25 @@ export class PlantsController {
         .json({ error: 'Internal Server Error', message: error.message })
     }
   }
-  static async getOrFetchPlantDetails(req, res) {
-    const { commonName } = req.query
+  static async patch(req, res) {
     try {
-      // Buscar en DB
-      const [existingExternalData] = await db.query(
-        'SELECT * FROM plants WHERE LOWER(common_name) = LOWER(?)',
-        [commonName]
-      )
-
-      if (existingExternalData.length > 0) {
-        console.log('Informacion insertada desde la base de datos local')
-        return res.status(200).json(existingExternalData[0])
-      }
-
-      // Si no está, usar API externa
-      const plantId = await fetchExternalDataId(commonName)
-      const externalDetails = await fetchExternalDetails(plantId)
-
-      if (!externalDetails) {
+      const { id } = req.params
+      const data = req.body
+      if (!data || Object.keys(data).length === 0) {
         return res
-          .status(404)
-          .json({ message: 'Planta no encontrada en la API externa' })
+          .status(400)
+          .json({ error: 'No se proporcionaron datos para actualizar' })
       }
 
-      // Guardar en base de datos
-      await db.query(
-        'INSERT INTO plants (common_name, watering, sunlight, location, edible, toxicity, description, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [
-          commonName,
-          externalDetails.watering ?? 'unknown',
-          externalDetails.sunlight?.join(', ') ?? 'unknown',
-          externalDetails.indoor ?? 'unknown',
-          externalDetails.edible_fruit ?? false,
-          externalDetails.poisonous_to_humans ?? 'unknown',
-          externalDetails.description ?? 'No description available.',
-          'External API'
-        ]
-      )
-      console.log('Informacion insertada desde la api externa')
+      const updatedPlant = await PlantsModel.updatePlant(id, data)
+      if (!updatedPlant) {
+        return res.status(404).json({ error: 'Planta no encontrada' })
+      }
 
-      return res.status(200).json(externalDetails)
-    } catch (err) {
-      console.error('Error buscando o guardando detalles:', err)
-      return res.status(500).json({ message: 'Error interno del servidor' })
+      return res.status(200).json(updatedPlant)
+    } catch (error) {
+      console.error('Error al actualizar la planta', error)
+      return res.status(500).json({ error: 'Error interno del servidor' })
     }
   }
 
