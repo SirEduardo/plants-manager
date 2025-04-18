@@ -2,7 +2,7 @@
 
 import { Link } from 'react-router'
 import { useEffect, useState } from 'react'
-import type { Plants } from '../types'
+import type { Plants } from '../../types'
 import {
   Leaf,
   Plus,
@@ -13,7 +13,7 @@ import {
   Flower
 } from 'lucide-react'
 import axios from 'axios'
-import { apiUrl } from '../api/url'
+import { apiUrl } from '../../api/url'
 
 export const PlantsList = () => {
   const [plants, setPlants] = useState<Plants[]>([])
@@ -105,11 +105,11 @@ export const PlantsList = () => {
     <div className="min-h-svh bg-gradient-to-b from-gray-800 via-gray-850 to-gray-900 text-white p-6">
       <div className="relative mb-12 pb-4 border-b border-gray-700/50">
         <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-transparent to-green-500/10 rounded-lg opacity-30"></div>
-        <h1 className="text-3xl font-bold text-center py-6 text-white relative z-10">
+        <h1 className="text-3xl font-bold text-center py-6 text-white relative">
           <span className="inline-flex items-center gap-3">
             <div className="relative">
               <div className="absolute inset-0 bg-green-400/20 rounded-full blur-md"></div>
-              <Leaf className="text-green-400 relative z-10" size={32} />
+              <Leaf className="text-green-400 relative" size={32} />
             </div>
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-300 to-green-500">
               Mi Jardín
@@ -163,7 +163,7 @@ export const PlantsList = () => {
                   </div>
                 </div>
               </Link>
-              <div className="absolute top-3 right-3 z-20 flex gap-2">
+              <div className="absolute top-3 right-3 flex gap-2">
                 <button
                   onClick={(e) => {
                     e.preventDefault()

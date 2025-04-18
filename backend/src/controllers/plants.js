@@ -53,8 +53,6 @@ export class PlantsController {
       data.user_id = req.userId
       console.log('Datos a insertar en la BD:', data)
       const newPlant = await PlantsModel.addPlants(data, data.user_id)
-      console.log(newPlant)
-
       return res.status(201).json(newPlant)
     } catch (error) {
       return res

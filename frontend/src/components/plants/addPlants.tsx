@@ -13,10 +13,10 @@ import {
   Check,
   ArrowLeft
 } from 'lucide-react'
-import { Header } from './Header'
+import { Header } from '../Header'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
-import { apiUrl } from '../api/url'
+import { apiUrl } from '../../api/url'
 
 export default function AddPlants() {
   const [formData, setFormData] = useState({

@@ -1,7 +1,7 @@
 'use client'
 
 import { useNavigate, useParams } from 'react-router'
-import type { Plants } from '../types'
+import type { Plants } from '../../types'
 import { useEffect, useState } from 'react'
 import {
   ArrowLeft,
@@ -18,7 +18,7 @@ import {
   AlertTriangle
 } from 'lucide-react'
 import axios from 'axios'
-import { apiUrl } from '../api/url'
+import { apiUrl } from '../../api/url'
 
 export function PlantId() {
   const { id } = useParams<{ id: string }>()

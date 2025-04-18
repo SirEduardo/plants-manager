@@ -144,7 +144,7 @@ export function Notifications() {
         </button>
 
         {showNotifications && (
-          <div className="absolute right-[-60px] mt-2 w-80 max-h-[28rem] overflow-hidden rounded-xl bg-gray-800/90 backdrop-blur-sm shadow-xl border border-gray-700/50 z-50 transform origin-top-right transition-all duration-200 animate-in fade-in slide-in-from-top-5">
+          <div className="absolute right-[-60px] mt-2 w-80 max-h-[28rem] overflow-hidden rounded-xl bg-gray-800/97  shadow-xl border border-gray-700/50 z-50 transform origin-top-right transition-all duration-200 animate-in fade-in slide-in-from-top-5">
             <div className="p-3 border-b border-gray-700/50 bg-gradient-to-r from-gray-800 via-gray-750 to-gray-800">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-medium text-green-400 flex items-center gap-2">
