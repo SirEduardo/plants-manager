@@ -25,6 +25,7 @@ export function PlantId() {
   const [plant, setPlant] = useState<Plants | null>(null)
   const [plantDetail, setPlantDetail] = useState<Plants | null>(null)
   const [showMoreInfo, setShowMoreInfo] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
 
   const navigate = useNavigate()
 
@@ -48,6 +49,12 @@ export function PlantId() {
   const handleDelete = async () => {
     await axios.delete(`${apiUrl}/plants/${id}`)
     navigate('/plantsList')
+  }
+  const abrirModal = () => setDeleteModal(true)
+  const cerrarModal = () => setDeleteModal(false)
+  const confirmarEliminacion = () => {
+    handleDelete()
+    cerrarModal()
   }
 
   const toggleMoreInfo = () => {
@@ -98,7 +105,7 @@ export function PlantId() {
             <div className="p-6">
               <div className="flex justify-end mb-4">
                 <button
-                  onClick={handleDelete}
+                  onClick={abrirModal}
                   className="bg-gray-700/50 hover:bg-red-900/30 p-2 rounded-full transition-colors duration-200 group cursor-pointer"
                 >
                   <Trash2Icon
@@ -107,6 +114,33 @@ export function PlantId() {
                   />
                 </button>
               </div>
+
+              {deleteModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+                  <div className="bg-gray-800 rounded-xl shadow-xl p-6 max-w-sm w-full text-center">
+                    <h2 className="text-lg font-semibold mb-4">
+                      ¿Eliminar planta?
+                    </h2>
+                    <p className="opacity-70 mb-6">
+                      ¿Estás seguro que deseas eliminar esta planta?
+                    </p>
+                    <div className="flex justify-center gap-4">
+                      <button
+                        onClick={confirmarEliminacion}
+                        className="bg-red-800 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors cursor-pointer"
+                      >
+                        Sí, eliminar
+                      </button>
+                      <button
+                        onClick={cerrarModal}
+                        className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
