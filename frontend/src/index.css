@@ -1,9 +1,1 @@
 @import "tailwindcss";
-
-#root{
-height: 100%;
-margin: 0;
-overscroll-behavior: none;
-overscroll-behavior-y: contain ;
-overflow-x: hidden;
-}
