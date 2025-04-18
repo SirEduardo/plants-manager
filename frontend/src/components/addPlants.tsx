@@ -16,7 +16,6 @@ import {
 import { Header } from './Header'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
-import { translateToEnglish } from './fetch/translateToEnglish'
 import { apiUrl } from '../api/url'
 
 export default function AddPlants() {
@@ -33,12 +32,6 @@ export default function AddPlants() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const navigate = useNavigate()
-
-  const isSpanish = (text: string): boolean => {
-    // Chequeamos si el texto contiene letras típicas del español, como 'á', 'é', 'í', 'ó', 'ú'
-    const spanishCharacters = /[áéíóúñ]/i
-    return spanishCharacters.test(text)
-  }
 
   // Función para manejar cambios en los inputs
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,17 +110,9 @@ export default function AddPlants() {
     setIsSubmitting(true)
 
     try {
-      let plantNameInEnglish = formData.commonName
-
-      // Si el nombre está en español, traducimos antes de enviar
-      if (isSpanish(formData.commonName)) {
-        plantNameInEnglish = await translateToEnglish(formData.commonName)
-        console.log(`Nombre traducido a inglés: ${plantNameInEnglish}`)
-      }
-
       // Preparamos el FormData para enviar
       const form = new FormData()
-      form.append('commonName', plantNameInEnglish)
+      form.append('commonName', formData.commonName)
       if (formData.image) form.append('image', formData.image)
       form.append('last_watering_date', formData.last_watering_date)
       form.append('last_fertilize_date', formData.last_fertilize_date)
@@ -147,7 +132,16 @@ export default function AddPlants() {
         console.error('❌ Error al añadir la planta', response.data)
       }
     } catch (error) {
+      const err = error as any
       console.error('❌ Error en el envío del formulario:', error)
+      if (err.response?.status === 404) {
+        setErrors((prev) => ({
+          ...prev,
+          commonName: 'No se encontró esta planta en la base de datos'
+        }))
+      } else {
+        alert('Ocurrió un error al enviar el formulario.')
+      }
     } finally {
       setIsSubmitting(false)
     }

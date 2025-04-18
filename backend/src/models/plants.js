@@ -49,6 +49,17 @@ export class PlantsModel {
     const { commonName, image, last_watering_date, last_fertilize_date } = input // Destructuramos los datos enviados por el frontend
 
     try {
+      // verificamos si la planta existe en la base de datos
+      const { rows: externalMatch } = await db.query(
+        'SELECT * FROM plants WHERE unaccent(common_name) ILIKE unaccent($1)',
+        [`%${commonName}%`]
+      )
+
+      if (externalMatch.length === 0) {
+        // Si no existe, lanzamos error personalizado
+        throw new Error('La planta no se encontró en la base de datos')
+      }
+
       // Verificamos si la planta ya existe en la base de datos del usuario
       const { rows: existingPlant } = await db.query(
         'SELECT * FROM user_plants WHERE user_id = $1 AND unaccent(common_name) ILIKE unaccent($2)',
@@ -66,13 +77,14 @@ export class PlantsModel {
           [user_id, commonName, image, last_watering_date, last_fertilize_date]
         )
         plantId = insertResult.rows[0].id
-        console.log('📬 Creando notificación...')
+
         await NotificationModel.createNotification(
           user_id,
           'Nueva planta añadida',
           `Has añadido correctamente ${commonName}`
         )
       }
+
       const { rows: joinedData } = await db.query(
         `SELECT 
           up.id AS plantId,
@@ -90,7 +102,7 @@ export class PlantsModel {
           p.animal_toxicity,
           p.description
         FROM user_plants up
-        LEFT JOIN plants p ON up.common_name = p.common_name
+        LEFT JOIN plants p ON unaccent(up.common_name) ILIKE unaccent(p.common_name)
         WHERE up.id = $1`,
         [plantId]
       )
