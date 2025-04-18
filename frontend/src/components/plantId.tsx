@@ -122,9 +122,7 @@ export function PlantId() {
                   <div className="bg-gray-700/50 p-3 rounded-lg border border-gray-600/30 hover:border-green-500/20 transition-colors duration-200 shadow-sm hover:shadow-md hover:shadow-green-900/10">
                     <div className="flex items-center gap-2 mb-1">
                       <Droplet size={14} className="text-green-400" />
-                      <p className="text-xs text-gray-400">
-                        Frecuencia de riego
-                      </p>
+                      <p className="text-xs text-gray-400">Riego verano</p>
                     </div>
                     <p className="font-medium">
                       {capitalize(plantDetail.summer_watering)}
@@ -145,7 +143,7 @@ export function PlantId() {
                   <div className="bg-gray-700/50 p-3 rounded-lg border border-gray-600/30 hover:border-green-500/20 transition-colors duration-200 shadow-sm hover:shadow-md hover:shadow-green-900/10">
                     <div className="flex items-center gap-2 mb-1">
                       <Home size={14} className="text-green-400" />
-                      <p className="text-xs text-gray-400">Localización</p>
+                      <p className="text-xs text-gray-400">Ubicación</p>
                     </div>
                     <p className="font-medium">
                       {capitalize(plantDetail.location)}
@@ -264,37 +262,34 @@ export function PlantId() {
                     <div className="bg-gray-700/50 p-3 rounded-lg border border-gray-600/30 hover:border-green-500/20 transition-colors duration-200 shadow-sm hover:shadow-md hover:shadow-green-900/10">
                       <div className="flex items-center gap-2 mb-1">
                         <Snowflake size={14} className="text-green-400" />
-                        <p className="text-xs text-gray-400">
-                          Frecuencia riego invierno
-                        </p>
+                        <p className="text-xs text-gray-400">Riego invierno</p>
                       </div>
                       <p className="font-medium">
                         {capitalize(plantDetail.winter_watering)}
                       </p>
                     </div>
-                    <div className="bg-gray-700/50 p-3 rounded-lg border border-gray-600/30 hover:border-green-500/20 transition-colors duration-200 shadow-sm hover:shadow-md hover:shadow-green-900/10 flex items-center">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <AlertTriangle size={14} className="text-green-400" />
-                          <p className="text-xs text-gray-400">
-                            Tóxica para animales
-                          </p>
-                        </div>
+                    <div className="bg-gray-700/50 p-3 rounded-lg border border-gray-600/30 hover:border-green-500/20 transition-colors duration-200 shadow-sm hover:shadow-md hover:shadow-green-900/10 ">
+                      <div className="flex items-center gap-2 mb-1">
+                        <AlertTriangle size={14} className="text-green-400" />
+                        <p className="text-xs text-gray-400">Tóxica animales</p>
+                      </div>
+                      <div className="flex items-center">
                         <p className="font-medium">
                           {plantDetail.human_toxicity === false ? 'No' : 'Sí'}
                         </p>
+
+                        <div
+                          className={`ml-auto w-3 h-3 rounded-full ${
+                            plantDetail.human_toxicity === false
+                              ? 'bg-green-500'
+                              : 'bg-red-500'
+                          } shadow-md ${
+                            plantDetail.human_toxicity === false
+                              ? 'shadow-green-500/30'
+                              : 'shadow-red-500/30'
+                          }`}
+                        ></div>
                       </div>
-                      <div
-                        className={`ml-auto w-3 h-3 rounded-full ${
-                          plantDetail.human_toxicity === false
-                            ? 'bg-green-500'
-                            : 'bg-red-500'
-                        } shadow-md ${
-                          plantDetail.human_toxicity === false
-                            ? 'shadow-green-500/30'
-                            : 'shadow-red-500/30'
-                        }`}
-                      ></div>
                     </div>
                   </div>
 

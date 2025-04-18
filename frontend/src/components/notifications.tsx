@@ -137,7 +137,7 @@ export function Notifications() {
 
       {/* Notification Panel */}
       {showNotifications && (
-        <div className="absolute right-0 mt-2 w-80 max-h-[28rem] overflow-hidden rounded-xl bg-gray-800/90 backdrop-blur-sm shadow-xl border border-gray-700/50 z-50 transform origin-top-right transition-all duration-200 animate-in fade-in slide-in-from-top-5">
+        <div className="absolute right-[-60px] mt-2 w-80 max-h-[28rem] overflow-hidden rounded-xl bg-gray-800/90 backdrop-blur-sm shadow-xl border border-gray-700/50 z-50 transform origin-top-right transition-all duration-200 animate-in fade-in slide-in-from-top-5">
           <div className="p-3 border-b border-gray-700/50 bg-gradient-to-r from-gray-800 via-gray-750 to-gray-800">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-medium text-green-400 flex items-center gap-2">
@@ -221,7 +221,7 @@ export function Notifications() {
                         onClick={(e) =>
                           handleDeleteNotification(notification.id, e)
                         }
-                        className="absolute right-3 top-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded-full hover:bg-red-500/20 text-gray-400 hover:text-red-400 cursor-pointer"
+                        className="absolute right-3 top-4  transition-opacity duration-200 p-1 rounded-full hover:bg-red-500/20 text-gray-400 hover:text-red-400 cursor-pointer"
                         aria-label="Eliminar notificación"
                       >
                         <Trash2 className="w-4 h-4" />

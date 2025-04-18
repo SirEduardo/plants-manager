@@ -163,7 +163,7 @@ export default function AddPlants() {
 
       <button
         onClick={handleBack}
-        className="flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors mb-8 cursor-pointer group"
+        className="flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors mb-8 cursor-pointer group mt-10"
       >
         <ArrowLeft
           size={20}
@@ -196,10 +196,10 @@ export default function AddPlants() {
                 <div className="space-y-2">
                   <label
                     htmlFor="commonName"
-                    className="text-green-400 text-sm font-medium block flex items-center gap-2"
+                    className="text-green-400 text-sm font-medium flex items-center gap-2"
                   >
                     <Leaf className="h-4 w-4" />
-                    Nombre <span className="text-red-400">*</span>
+                    Nombre
                   </label>
                   <input
                     id="commonName"
@@ -219,9 +219,9 @@ export default function AddPlants() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-green-400 text-sm font-medium block flex items-center gap-2">
+                <label className="text-green-400 text-sm font-medium  flex items-center gap-2">
                   <ImageIcon className="h-4 w-4" />
-                  Imagen<span className="text-red-400">*</span>
+                  Imagen
                 </label>
 
                 {!imagePreview ? (
@@ -277,7 +277,7 @@ export default function AddPlants() {
                     className="text-green-400 flex items-center gap-2 text-sm font-medium"
                   >
                     <Droplet className="h-4 w-4" />
-                    Último Riego <span className="text-red-400">*</span>
+                    Último Riego
                   </label>
                   <input
                     id="last_watering_date"
@@ -315,10 +315,7 @@ export default function AddPlants() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-green-900/40 via-green-800/30 to-green-900/40 p-6 flex justify-between items-center border-t border-green-800/50">
-              <p className="text-gray-300 text-sm">
-                <span className="text-red-400">*</span> Campos obligatorios
-              </p>
+            <div className="bg-gradient-to-r from-green-900/40 via-green-800/30 to-green-900/40 p-6 flex justify-center md:justify-end border-t border-green-800/50">
               <button
                 type="submit"
                 disabled={isSubmitting}
