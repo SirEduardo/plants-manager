@@ -13,6 +13,7 @@ plantsRouter.post(
   PlantsController.create
 )
 plantsRouter.get('/:id', PlantsController.getById)
+plantsRouter.get('/city/:name', PlantsController.getByName)
 plantsRouter.patch('/:id', PlantsController.patch)
 plantsRouter.delete('/:id', PlantsController.delete)
 
