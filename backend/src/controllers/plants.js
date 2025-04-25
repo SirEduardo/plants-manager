@@ -1,9 +1,6 @@
 import { PlantsModel } from '../models/plants.js'
 import { validatePlant } from '../schemas/plants.js'
-import {
-  fetchExternalDataId,
-  fetchExternalDetails
-} from '../services/perenualService.js'
+import { getLocationSlug } from '../services/coordenades.js'
 import { deleteFiles } from '../utils/deleteFiles.js'
 
 export class PlantsController {
@@ -33,6 +30,26 @@ export class PlantsController {
     }
   }
 
+  static async getByName(req, res) {
+    const { name } = req.params
+
+    const locationId = await getLocationSlug(name)
+    if (!locationId) {
+      return res
+        .status(404)
+        .json({ error: 'Ciudad no encontrada en la base de datos' })
+    }
+
+    try {
+      const plants = await PlantsModel.getByLocation(locationId)
+      return res.status(200).json(plants)
+    } catch (error) {
+      res
+        .status(404)
+        .json({ message: 'Plantas por localizacion no encontradas', error })
+    }
+  }
+
   static async create(req, res) {
     const result = validatePlant(req.body)
 
@@ -41,6 +58,17 @@ export class PlantsController {
       return res.status(400).json({ error: result.error.errors })
     }
     const data = result.data
+    const name = data.location_id
+
+    const locationId = await getLocationSlug(name)
+    if (!locationId) {
+      return res
+        .status(404)
+        .json({ error: 'Ciudad no encontrada en la base de datos' })
+    }
+
+    data.location_id = locationId
+
     try {
       if (!data) {
         return res.status(400).json({ error: 'Datos de planta inválidos' })
@@ -50,6 +78,7 @@ export class PlantsController {
       } else {
         data.image = null // Puedes definir una imagen por defecto si lo deseas
       }
+
       data.user_id = req.userId
       console.log('Datos a insertar en la BD:', data)
       const newPlant = await PlantsModel.addPlants(data, data.user_id)
