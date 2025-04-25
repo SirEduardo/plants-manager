@@ -7,12 +7,15 @@ import plantsRouter from './routes/plants.js'
 import userRouter from './routes/user.js'
 import authenticateUser from './utils/auth.js'
 import notificationRoutes from './routes/notification.js'
+import locationRoutes from './routes/location.js'
+import './cron/wateringChecker.js'
 
 const app = express()
 
 const allowedOrigins = [
   'https://plants-manager-front.vercel.app',
-  'http://localhost:5173'
+  'http://localhost:5173',
+  'http://localhost:8081'
 ]
 
 const corsOptions = {
@@ -37,6 +40,7 @@ app.get('/', (req, res) => {
 app.use('/plants', plantsRouter)
 app.use('/users', userRouter)
 app.use('/notifications', notificationRoutes)
+app.use('/locations', locationRoutes)
 app.get('/auth', authenticateUser, (req, res) => {
   res.sendStatus(200)
 })
