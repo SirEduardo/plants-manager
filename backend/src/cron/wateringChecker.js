@@ -1,15 +1,18 @@
 import cron from 'node-cron'
 import { PlantsModel } from '../models/plants.js'
-import { shouldWater } from '../services/plantService.js'
+import { shouldWater } from '../services/waterService.js'
 import { NotificationModel } from '../models/notification.js'
-import { shouldFertilize } from '../services/fertilizeService.js'
+import { LocationModel } from '../models/location.js'
+import { temperature } from '../services/temperatureService.js'
+import checkFertilizing from '../services/fertilizeService.js'
 
 cron.schedule(
-  '* 9 * * *',
+  '* 8 * * *',
   async () => {
     try {
-      const plants = await PlantsModel.getPlantsWithInfo()
-      console.log(plants)
+      const plants = (await PlantsModel.getPlantsWithInfo()) || []
+
+      const locations = await LocationModel.getLocation()
 
       plants.forEach((plant) => {
         const waterResult = shouldWater(plant)
@@ -19,13 +22,22 @@ cron.schedule(
           )
           sendWateringNotification(plant.user_id, plant.common_name)
         }
-        const fertilizeResult = shouldFertilize(plant)
-        if (fertilizeResult.needsFertilizing) {
+      })
+      const plantsToFertilize = checkFertilizing(plants)
+      plantsToFertilize.forEach((plant) => {
+        console.log(
+          `🌱 La planta ${plant.common_name} del usuario ${plant.user_id} necesita riego hoy.`
+        )
+        sendFertilizeNotification(plant.user_id, plant.common_name)
+      })
+
+      locations.forEach((location) => {
+        const temperatureResult = temperature(location)
+        if (temperatureResult.warningTemperature)
           console.log(
-            `🌱 La planta ${plant.common_name} del usuario ${plant.user_id} necesita riego hoy.`
+            `Las plantas que hay en ${location.name} tienen riesgo de heladas`
           )
-          sendFertilizeNotification(plant.user_id, plant.common_name)
-        }
+        SendTemperatureNotification(location.name, location.user_id)
       })
     } catch (err) {
       console.error('❌ Error en cron job:', err)
@@ -49,5 +61,13 @@ async function sendFertilizeNotification(userId, plantName) {
     userId,
     'Fertilización',
     `Tu planta ${plantName} necesita que la fertilices hoy!🌱`
+  )
+}
+
+async function SendTemperatureNotification(localization, userId) {
+  await NotificationModel.createNotification(
+    userId,
+    'Aviso de helada!!',
+    `Tus plantas en ${localization} están en peligro de helada!❄️`
   )
 }

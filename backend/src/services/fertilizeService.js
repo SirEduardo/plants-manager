@@ -1,4 +1,4 @@
-export function checkFertilizing(plants) {
+function checkFertilizing(plants) {
   const now = new Date()
   const month = now.getMonth() + 1
   const isSpringOrSummer = month >= 3 && month <= 9
@@ -36,3 +36,5 @@ export function checkFertilizing(plants) {
     return 30
   }
 }
+
+export default checkFertilizing
