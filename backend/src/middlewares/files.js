@@ -23,3 +23,4 @@ const Storage = (folder) => {
 }
 
 export const uploadPlants = multer({ storage: Storage('Plants') })
+export const uploadLocalization = multer({ storage: Storage('Localization') })
