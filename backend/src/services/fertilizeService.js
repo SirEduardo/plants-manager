@@ -1,26 +1,28 @@
-export function shouldFertilize(plant) {
+export function checkFertilizing(plants) {
   const now = new Date()
   const month = now.getMonth() + 1
   const isSpringOrSummer = month >= 3 && month <= 9
 
-  if (!isSpringOrSummer) {
-    return { needFertilizing: false }
+  const plantsToFertilize = []
+
+  for (const plant of plants) {
+    if (!isSpringOrSummer) continue
+
+    const lastFertilizeDate = new Date(plant.lastFertilizeDate)
+    if (isNaN(lastFertilizeDate)) continue // Skip if invalid date
+
+    const diffInDays = Math.floor(
+      (now - lastFertilizeDate) / (1000 * 60 * 60 * 24)
+    )
+    const frequencyDays = parseFertilizeFrequency(plant.fertilize)
+
+    if (diffInDays >= frequencyDays) {
+      console.log(`🔔 ${plant.common_name} needs fertilizing today!`)
+      plantsToFertilize.push(plant)
+    }
   }
 
-  const lastFertilizeDate = new Date(plant.lastFertilizeDate)
-
-  const diffInDays = Math.floor(
-    (now - lastFertilizeDate) / (1000 * 60 * 60 * 24)
-  )
-  const frequencyDays = parseFertilizeFrequency(plant.fertilize)
-
-  console.log(
-    `🌸 ${plant.common_name}: ${diffInDays} días desde última fertilización. Frecuencia: cada ${frequencyDays} días.`
-  )
-
-  return {
-    needsFertilizing: diffInDays >= frequencyDays
-  }
+  return plantsToFertilize
 
   function parseFertilizeFrequency(text) {
     if (!text) return 30
