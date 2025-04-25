@@ -94,7 +94,7 @@ export default function AddLocalizations() {
     }
   }
 
-  const handleBack = () => navigate('/plantsList')
+  const handleBack = () => navigate('/Home')
 
   return (
     <main className="min-h-svh bg-gradient-to-b from-gray-800 via-gray-850 to-gray-900 text-white p-6">
