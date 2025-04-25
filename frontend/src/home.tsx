@@ -126,7 +126,7 @@ export const Home = () => {
             Añade tu primera ubicación para guardar tus plantas y comenzar tu
             jardín virtual y hacer un seguimiento de sus cuidados
           </p>
-          <Link to="/añdir-localización">
+          <Link to="/añadir-localización">
             <button className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-300 shadow-lg hover:shadow-green-500/30 flex items-center gap-2 transform hover:translate-y-[-2px]  cursor-pointer">
               <Plus size={18} />
               <span>Añadir primera ubicación</span>
