@@ -1,9 +1,4 @@
 import { db } from '../database/db.js'
-import {
-  fetchExternalDataId,
-  fetchExternalDetails
-} from '../services/perenualService.js'
-import { translateField } from '../utils/translatedFields.js'
 import { NotificationModel } from './notification.js'
 
 export class PlantsModel {
@@ -41,12 +36,26 @@ export class PlantsModel {
     }
   }
 
+  static async getByLocation(id) {
+    const { rows: location } = await db.query(
+      `SELECT * FROM user_plants WHERE location_id = $1`,
+      [id]
+    )
+    return location
+  }
+
   static async addPlants(input, user_id) {
     if (!input) {
       throw new Error('No se recibió ningún dato para añadir la planta')
     }
 
-    const { commonName, image, last_watering_date, last_fertilize_date } = input // Destructuramos los datos enviados por el frontend
+    const {
+      commonName,
+      image,
+      last_watering_date,
+      last_fertilize_date,
+      location_id
+    } = input // Destructuramos los datos enviados por el frontend
 
     try {
       // verificamos si la planta existe en la base de datos
@@ -62,8 +71,8 @@ export class PlantsModel {
 
       // Verificamos si la planta ya existe en la base de datos del usuario
       const { rows: existingPlant } = await db.query(
-        'SELECT * FROM user_plants WHERE user_id = $1 AND unaccent(common_name) ILIKE unaccent($2)',
-        [user_id, `%${commonName}%`]
+        'SELECT * FROM user_plants WHERE user_id = $1 AND unaccent(common_name) ILIKE unaccent($2) AND location_id = $3',
+        [user_id, `%${commonName}%`, location_id]
       )
 
       let plantId
@@ -73,8 +82,15 @@ export class PlantsModel {
         plantId = existingPlant[0].id
       } else {
         const insertResult = await db.query(
-          'INSERT INTO user_plants (user_id, common_name, image, last_watering_date, last_fertilize_date) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-          [user_id, commonName, image, last_watering_date, last_fertilize_date]
+          'INSERT INTO user_plants (user_id, common_name, image, last_watering_date, last_fertilize_date, location_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
+          [
+            user_id,
+            commonName,
+            image,
+            last_watering_date,
+            last_fertilize_date,
+            location_id
+          ]
         )
         plantId = insertResult.rows[0].id
 
