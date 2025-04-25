@@ -32,7 +32,7 @@ export class PlantsController {
 
   static async getByName(req, res) {
     const { name } = req.params
-
+    const userId = req.userId
     const locationId = await getLocationSlug(name)
     if (!locationId) {
       return res
@@ -41,7 +41,7 @@ export class PlantsController {
     }
 
     try {
-      const plants = await PlantsModel.getByLocation(locationId)
+      const plants = await PlantsModel.getByLocation(locationId, userId)
       return res.status(200).json(plants)
     } catch (error) {
       res

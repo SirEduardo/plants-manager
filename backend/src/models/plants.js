@@ -36,10 +36,10 @@ export class PlantsModel {
     }
   }
 
-  static async getByLocation(id) {
+  static async getByLocation(id, userId) {
     const { rows: location } = await db.query(
-      `SELECT * FROM user_plants WHERE location_id = $1`,
-      [id]
+      `SELECT * FROM user_plants WHERE location_id = $1 AND user_id = $2`,
+      [id, userId]
     )
     return location
   }
