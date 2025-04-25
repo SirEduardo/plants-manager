@@ -14,17 +14,19 @@ import {
   ArrowLeft
 } from 'lucide-react'
 import { Header } from '../Header'
-import { useNavigate } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import axios from 'axios'
 import { apiUrl } from '../../api/url'
 
 export default function AddPlants() {
+  const { id } = useParams()
   const [formData, setFormData] = useState({
     commonName: '',
     image: null as File | null,
     externalData: null as any,
     last_watering_date: '',
-    last_fertilize_date: ''
+    last_fertilize_date: '',
+    location: id || ''
   })
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -116,7 +118,7 @@ export default function AddPlants() {
       if (formData.image) form.append('image', formData.image)
       form.append('last_watering_date', formData.last_watering_date)
       form.append('last_fertilize_date', formData.last_fertilize_date)
-
+      form.append('location_id', formData.location)
       const response = await axios.post(`${apiUrl}/plants`, form, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -127,7 +129,7 @@ export default function AddPlants() {
 
       if (response.status === 201) {
         console.log('✅ Planta añadida correctamente')
-        navigate('/plantsList')
+        navigate(`/${id}`)
       } else {
         console.error('❌ Error al añadir la planta', response.data)
       }
@@ -148,7 +150,7 @@ export default function AddPlants() {
   }
 
   const handleBack = () => {
-    navigate('/plantsList')
+    navigate('/Home')
   }
 
   return (
@@ -198,7 +200,7 @@ export default function AddPlants() {
                   <input
                     id="commonName"
                     placeholder="Nombre de tu planta"
-                    value={formData.commonName}
+                    value={formData.commonName.toLowerCase()}
                     onChange={handleChange}
                     className={`w-full px-3 py-2 bg-gray-700/70 border ${
                       errors.commonName ? 'border-red-500' : 'border-gray-600'

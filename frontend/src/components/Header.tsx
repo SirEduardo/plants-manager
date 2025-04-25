@@ -51,7 +51,7 @@ export function Header() {
           {/* Logo/Brand */}
           <div className="flex items-center">
             <Link
-              to="/plantsList"
+              to="/Home"
               className="flex items-center gap-2 group transition-transform duration-300 hover:scale-105"
             >
               <div

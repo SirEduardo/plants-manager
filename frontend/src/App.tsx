@@ -1,5 +1,5 @@
 import { Header } from './components/Header'
-import { PlantsList } from './components/plants/plantsList'
+import { Home } from './home'
 
 function App() {
   return (
@@ -7,7 +7,7 @@ function App() {
       <Header />
       <main className="flex flex-col items-center pt-20">
         <div className="flex flex-col gap-2">
-          <PlantsList />
+          <Home />
         </div>
       </main>
     </body>

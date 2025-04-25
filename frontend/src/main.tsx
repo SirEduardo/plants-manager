@@ -6,15 +6,19 @@ import { PlantId } from './components/plants/plantId.tsx'
 import AddPlants from './components/plants/addPlants.tsx'
 import { Auth } from './components/auth/auth.tsx'
 import { ProtectedRoute } from './components/auth/protectedRoute.tsx'
+import AddLocalizations from './components/plants/addLocalization.tsx'
+import { PlantsList } from './components/plants/plantsList.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Auth />} />
       <Route element={<ProtectedRoute />}>
-        <Route path="/plantsList" element={<App />} />
-        <Route path="/:id" element={<PlantId />} />
-        <Route path="/add-plants" element={<AddPlants />} />
+        <Route path="/home" element={<App />} />
+        <Route path="/:id" element={<PlantsList />} />
+        <Route path="/:id/:id" element={<PlantId />} />
+        <Route path="/:id/add-plants" element={<AddPlants />} />
+        <Route path="/añadir-localización" element={<AddLocalizations />} />
       </Route>
     </Routes>
   </BrowserRouter>

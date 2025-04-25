@@ -1,6 +1,6 @@
 'use client'
 
-import { Link } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
 import { useEffect, useState } from 'react'
 import type { Plants } from '../../types'
 import {
@@ -10,12 +10,15 @@ import {
   Droplet,
   Calendar,
   Check,
-  Flower
+  Flower,
+  ArrowLeft
 } from 'lucide-react'
 import axios from 'axios'
 import { apiUrl } from '../../api/url'
 
 export const PlantsList = () => {
+  const { id } = useParams()
+  const navigate = useNavigate()
   const [plants, setPlants] = useState<Plants[]>([])
   const [loading, setLoading] = useState(true)
   const [wateringPlants, setWateringPlants] = useState<Record<string, boolean>>(
@@ -29,7 +32,7 @@ export const PlantsList = () => {
     const fetchPlants = async () => {
       try {
         setLoading(true)
-        const response = await axios.get(`${apiUrl}/plants`, {
+        const response = await axios.get(`${apiUrl}/plants/city/${id}`, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -104,6 +107,10 @@ export const PlantsList = () => {
     return String(val).charAt(0).toUpperCase() + String(val).slice(1)
   }
 
+  const handleBack = () => {
+    navigate('/home')
+  }
+
   return (
     <div className="min-h-svh bg-gradient-to-b from-gray-800 via-gray-850 to-gray-900 text-white p-6">
       <div className="relative mb-12 pb-4 border-b border-gray-700/50">
@@ -120,6 +127,16 @@ export const PlantsList = () => {
           </span>
         </h1>
       </div>
+      <button
+        onClick={handleBack}
+        className="flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors mb-8 cursor-pointer group"
+      >
+        <ArrowLeft
+          size={20}
+          className="group-hover:-translate-x-1 transition-transform duration-200"
+        />
+        <span>Atrás</span>
+      </button>
 
       {loading ? (
         <div className="flex flex-col items-center justify-center h-[50vh]">
@@ -130,7 +147,11 @@ export const PlantsList = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {plants.map((plant: Plants) => (
             <div key={plant.id} className="relative">
-              <Link to={`/${plant.id}`} key={plant.id} className="block group">
+              <Link
+                to={`/${id}/${plant.id}`}
+                key={plant.id}
+                className="block group"
+              >
                 <div className="bg-gray-800/70 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg border border-gray-700/50 hover:border-green-500/30 hover:shadow-green-400/20 hover:scale-102 transition-all duration-300 h-full">
                   <div className="relative aspect-square overflow-hidden">
                     <img
@@ -202,7 +223,7 @@ export const PlantsList = () => {
               </div>
             </div>
           ))}
-          <Link to="/add-plants" className="block group">
+          <Link to={`/${id}/add-plants`} className="block group">
             <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg border border-gray-700/50 border-dashed hover:border-green-500/50 hover:shadow-green-400/20 hover:scale-102 transition-all duration-300 h-full flex flex-col items-center justify-center aspect-square">
               <div className="relative mb-3">
                 <div className="absolute inset-0 bg-green-400/10 rounded-full blur-md group-hover:bg-green-400/20 transition-all duration-300"></div>
@@ -227,7 +248,7 @@ export const PlantsList = () => {
             Añade tu primera planta para comenzar tu jardín virtual y hacer un
             seguimiento de sus cuidados
           </p>
-          <Link to="/add-plants">
+          <Link to={`/${id}/add-plants`}>
             <button className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-300 shadow-lg hover:shadow-green-500/30 flex items-center gap-2 transform hover:translate-y-[-2px]  cursor-pointer">
               <Plus size={18} />
               <span>Añadir primera planta</span>

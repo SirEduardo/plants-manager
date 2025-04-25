@@ -43,12 +43,12 @@ export function PlantId() {
   }, [id])
 
   const handleBack = () => {
-    navigate('/plantsList')
+    navigate(-1)
   }
 
   const handleDelete = async () => {
     await axios.delete(`${apiUrl}/plants/${id}`)
-    navigate('/plantsList')
+    navigate(-1)
   }
   const abrirModal = () => setDeleteModal(true)
   const cerrarModal = () => setDeleteModal(false)

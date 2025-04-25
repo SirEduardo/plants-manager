@@ -47,7 +47,7 @@ export function Login({ activeTab }: LoginProps) {
 
         console.log('Token guardado.')
 
-        navigate('/plantsList')
+        navigate('/Home')
       } else {
         console.error(
           'Error al iniciar sesión después del login',

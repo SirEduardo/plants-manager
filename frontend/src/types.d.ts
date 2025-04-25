@@ -14,6 +14,8 @@ export interface Plants {
     sunlight: string
     human_toxicity: boolean
     animal_toxicity: boolean
+    location_id: string
+    localization: string
     location: string
 }
 
@@ -25,4 +27,10 @@ export interface Notification {
     message: string
     status: boolean
     created_at: string
+}
+
+export interface Localizations {
+    id: string,
+    name: string,
+    image: string
 }
