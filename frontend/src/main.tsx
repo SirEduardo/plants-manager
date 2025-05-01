@@ -3,11 +3,11 @@ import './index.css'
 import App from './App.tsx'
 import { BrowserRouter, Routes, Route } from 'react-router'
 import { PlantId } from './components/plants/plantId.tsx'
-import AddPlants from './components/plants/addPlants.tsx'
 import { Auth } from './components/auth/auth.tsx'
 import { ProtectedRoute } from './components/auth/protectedRoute.tsx'
-import AddLocalizations from './components/plants/addLocalization.tsx'
+import AddLocalizations from './components/forms/addLocalization.tsx'
 import { PlantsList } from './components/plants/plantsList.tsx'
+import AddPlants from './components/forms/addPlants.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>

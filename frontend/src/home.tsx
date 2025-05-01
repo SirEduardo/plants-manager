@@ -3,7 +3,7 @@
 import { Link, useNavigate } from 'react-router'
 import { useEffect, useState } from 'react'
 
-import { HomeIcon, Plus, Loader2 } from 'lucide-react'
+import { HomeIcon, Plus, Loader2, Trash2Icon } from 'lucide-react'
 import axios from 'axios'
 
 import { Localizations } from './types'
@@ -12,6 +12,9 @@ import { apiUrl } from './api/url'
 export const Home = () => {
   const [localizations, setLocalizations] = useState<Localizations[]>([])
   const [loading, setLoading] = useState(true)
+  const [deleteModal, setDeleteModal] = useState(false)
+  const [selectedLocalization, setSelectedLocalization] =
+    useState<Localizations | null>(null)
 
   const navigate = useNavigate()
 
@@ -41,6 +44,29 @@ export const Home = () => {
     }
     fetchLocalizations()
   }, [])
+
+  const handleDelete = async () => {
+    if (!selectedLocalization) return
+    await axios.delete(`${apiUrl}/locations/${selectedLocalization.id}`, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+
+    setLocalizations((prev) =>
+      prev.filter((loc) => loc.id !== selectedLocalization.id)
+    )
+  }
+  const abrirModal = (localization: Localizations) => {
+    setSelectedLocalization(localization)
+    setDeleteModal(true)
+  }
+  const cerrarModal = () => setDeleteModal(false)
+  const confirmarEliminacion = () => {
+    handleDelete()
+    cerrarModal()
+  }
 
   const capitalize = (val: string) => {
     return String(val).charAt(0).toUpperCase() + String(val).slice(1)
@@ -90,7 +116,22 @@ export const Home = () => {
                       alt={localization.name}
                       loading="lazy"
                     />
+
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent opacity-80"></div>
+                    <div className="absolute top-2 right-2 z-10">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          abrirModal(localization)
+                        }}
+                        className="bg-gray-700/50 hover:bg-red-900/30 p-2 rounded-full transition-colors duration-200 group cursor-pointer"
+                      >
+                        <Trash2Icon
+                          className="text-red-400 group-hover:text-red-300"
+                          size={18}
+                        />
+                      </button>
+                    </div>
                   </div>
                   <div className="p-4">
                     <h2 className="text-lg font-medium text-green-400 text-center group-hover:scale-105 transition-transform duration-300">
@@ -101,6 +142,33 @@ export const Home = () => {
               </div>
             </div>
           ))}
+          {deleteModal && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+              <div className="bg-gray-800 rounded-xl shadow-xl p-6 max-w-sm w-full text-center">
+                <h2 className="text-lg font-semibold mb-4">
+                  ¿Eliminar localización?
+                </h2>
+                <p className="opacity-70 mb-6">
+                  ¿Estás seguro que deseas eliminar esta localización? Hacerlo
+                  eliminara todas las plantas asociadas a ella.
+                </p>
+                <div className="flex justify-center gap-4">
+                  <button
+                    onClick={confirmarEliminacion}
+                    className="bg-red-800 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors cursor-pointer"
+                  >
+                    Sí, eliminar
+                  </button>
+                  <button
+                    onClick={cerrarModal}
+                    className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
           <Link to="/añadir-localización" className="block group">
             <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg border border-gray-700/50 border-dashed hover:border-green-500/50 hover:shadow-green-400/20 hover:scale-102 transition-all duration-300 h-full flex flex-col items-center justify-center aspect-square">
               <div className="relative mb-3">
