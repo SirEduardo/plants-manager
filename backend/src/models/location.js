@@ -17,4 +17,11 @@ export class LocationModel {
     )
     return location
   }
+  static async delete(id) {
+    const { rows: location } = await db.query(
+      `DELETE FROM locations WHERE id = $1`,
+      [id]
+    )
+    return location
+  }
 }

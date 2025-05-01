@@ -12,5 +12,6 @@ locationRoutes.post(
   uploadLocalization.single('image'),
   LocationController.create
 )
+locationRoutes.delete('/:id', authenticateUser, LocationController.delete)
 
 export default locationRoutes

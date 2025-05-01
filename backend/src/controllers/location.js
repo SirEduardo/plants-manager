@@ -45,4 +45,20 @@ export class LocationController {
         .json({ message: 'Error al encontrar la ubicación', error })
     }
   }
+
+  static async delete(req, res) {
+    const { id } = req.params
+    try {
+      const location = await LocationModel.delete(id)
+      if (!location) {
+        return res.status(404).json({ message: 'Ubicación no encontrada' })
+      }
+      return res.status(200).json({ message: 'Ubicación eliminada' })
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Error al eliminar la ubicación',
+        error
+      })
+    }
+  }
 }
